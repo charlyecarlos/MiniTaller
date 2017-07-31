@@ -87,10 +87,14 @@ public class JDialogPropietarios extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						try {
 							int row=table.getSelectedRow();
-							Long id=new Long(Integer.parseInt(table.getModel().getValueAt(row, 0).toString()));
-							JDialogVehiculos dialog = new JDialogVehiculos(manager,id);
-							dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-							dialog.setVisible(true);
+							if(row!=-1){
+								Long id=new Long(table.getModel().getValueAt(row, 0).toString());
+								JDialogVehiculos dialog = new JDialogVehiculos(manager,id);
+								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+								dialog.setVisible(true);
+								dispose();
+							}else
+								JOptionPane.showMessageDialog(okButton ,"No se ha seleccionado ningun cliente.");								
 						} catch (Exception arg0) {
 							arg0.printStackTrace();
 							JOptionPane.showMessageDialog(okButton ,"No se ha seleccionado ningun cliente.");

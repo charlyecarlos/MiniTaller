@@ -8,4 +8,6 @@ import es.charlye.coches.Modelo.Averia;
 public interface AveriaDAO extends DAO<Averia, Long>{
 
 	public List<Averia> obtenerGrupo(Long id) throws DAOException;
+	
+	public List<Averia> obtenerPorFecha(String fecha) throws DAOException;
 }

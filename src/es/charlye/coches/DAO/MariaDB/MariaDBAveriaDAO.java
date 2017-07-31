@@ -19,7 +19,8 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 	final String GETALL="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO FROM AVERIA";
 	final String GETGROUP="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO FROM AVERIA WHERE ID_VEHI 	= ?";
 	final String GETONE="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO FROM AVERIA WHERE ID_AVERIA = ?";
-	
+	final String GETMONTH="SELECT `ID_AVERIA`, `ID_VEHI`, `FECHA_AVERIA`, `COMEN_AVERIA`, `PRECIO_REPUESTO`, `PRECIO_COBRADO` FROM `AVERIA` WHERE FECHA_AVERIA BETWEEN ? AND LAST_DAY(?)";
+		
 	private Connection conn;
 	private List<Averia> averias;
 	
@@ -100,13 +101,13 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 
 	@Override
 	public List<Averia> obtenerTodos() throws DAOException {
-		List<Averia> a=new ArrayList<Averia>();
+		averias=new ArrayList<Averia>();
 		PreparedStatement stat=null;
 		try {
 			stat = conn.prepareStatement(GETALL);
 			ResultSet set=stat.executeQuery();
 			while(set.next())
-				a.add(new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6)));
+				averias.add(new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6)));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{
@@ -117,7 +118,7 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 					throw new DAOException("Error en SQL", e);
 				}
 		}
-		return a;
+		return averias;
 	}
 
 	@Override
@@ -147,7 +148,7 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 	 * id del vehiculo
 	 */
 	public List<Averia> obtenerGrupo(Long id) throws DAOException {
-		averias = null;
+		averias = new ArrayList<Averia>();
 		PreparedStatement stat=null;
 		try {
 			stat = conn.prepareStatement(GETGROUP);
@@ -157,6 +158,30 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 				Averia averia=new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6));
 				averias.add(averia);
 			}		
+		} catch (SQLException e) {
+			throw new DAOException("Error en SQL", e);
+		}finally{
+			if(stat!=null)
+				try {
+					stat.close();
+				} catch (SQLException e){
+					throw new DAOException("Error en SQL", e);
+				}
+		}
+		return averias;
+	}
+
+	@Override
+	public List<Averia> obtenerPorFecha(String fecha) throws DAOException {
+		averias =new ArrayList<Averia>();
+		PreparedStatement stat=null;
+		try {
+			stat = conn.prepareStatement(GETMONTH);
+			stat.setString(1, fecha+"-1");
+			stat.setString(2, fecha+"-1");
+			ResultSet set=stat.executeQuery();
+			while(set.next())
+				averias.add(new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6)));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{

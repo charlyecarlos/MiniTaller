@@ -8,6 +8,7 @@ import es.charlye.coches.TableModel.VehiculosTableModel;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.GroupLayout;
@@ -48,21 +49,62 @@ public class JDialogVehiculos extends JDialog {
 		setTitle("Vehiculos");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JDialogVehiculos.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
+				
 		setBounds(100, 100, 750, 397);
 		{
 			buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			{
+				
+				JScrollPane scrollPane = new JScrollPane();
+				GroupLayout groupLayout = new GroupLayout(getContentPane());
+				groupLayout.setHorizontalGroup(
+					groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(12)
+									.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 726, GroupLayout.PREFERRED_SIZE))
+								.addComponent(buttonPane, GroupLayout.PREFERRED_SIZE, 717, GroupLayout.PREFERRED_SIZE))
+							.addContainerGap(1611, Short.MAX_VALUE))
+				);
+				groupLayout.setVerticalGroup(
+					groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(31)
+							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 290, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(buttonPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addGap(112))
+				);
+				
+				table = new JTable();
+				scrollPane.setViewportView(table);
+				model=new VehiculosTableModel(manager.getVehiculoDAO());
+				model.updateModel(id);
+				table.setModel(model);
+				
 				JButton okButton = 
 						new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						
+						int row=table.getSelectedRow();
+						if(row!=-1){
+							try {
+								JFrameMain.setVehiculo(manager.getVehiculoDAO().obtener(new Long(table.getModel().getValueAt(row, 0).toString())));
+							} catch (NumberFormatException | DAOException e) {
+								e.printStackTrace();
+							}
+							dispose();
+						}else
+							JOptionPane.showMessageDialog(okButton ,"No se ha seleccionado ningun cliente.");
 					}
 				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
+
+				getContentPane().setLayout(groupLayout);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
@@ -75,36 +117,8 @@ public class JDialogVehiculos extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+
 		
-		JScrollPane scrollPane = new JScrollPane();
-		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(12)
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 726, GroupLayout.PREFERRED_SIZE))
-						.addComponent(buttonPane, GroupLayout.PREFERRED_SIZE, 717, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(1611, Short.MAX_VALUE))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(31)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 290, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(buttonPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(112))
-		);
-		
-		table = new JTable();
-		scrollPane.setViewportView(table);
-		model=new VehiculosTableModel(manager.getVehiculoDAO());
-		model.updateModel(id);
-		table.setModel(model);
-		
-		getContentPane().setLayout(groupLayout);
 	    setLocationRelativeTo(null);
 	    setModal(true);
 	}
