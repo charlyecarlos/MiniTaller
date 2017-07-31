@@ -5,19 +5,25 @@ import es.charlye.coches.Encrypt.EncryptMD5;
 import es.charlye.coches.Exception.DAOException;
 import es.charlye.coches.Modelo.Usuario;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.GroupLayout;
+import javax.swing.InputMap;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JPasswordField;
+import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
 
@@ -117,6 +123,23 @@ public class JDialogChangePassword extends JDialog {
 					.addComponent(btnCambiarContrasea)
 					.addContainerGap())
 		);
+		
+		int condition = JComponent.WHEN_FOCUSED;
+		  InputMap iMap = newPassword.getInputMap(condition);
+		  ActionMap aMap = newPassword.getActionMap();
+
+		  String enter = "enter";
+		  iMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enter);
+		  aMap.put(enter, new AbstractAction() {
+
+			private static final long serialVersionUID = -1096446379404108663L;
+
+			@Override
+		     public void actionPerformed(ActionEvent arg0) {
+		    	 btnCambiarContrasea.doClick();
+		     }
+		  });
+		  
 		contentPanel.setLayout(gl_contentPanel);
 	    setLocationRelativeTo(null);
 	}

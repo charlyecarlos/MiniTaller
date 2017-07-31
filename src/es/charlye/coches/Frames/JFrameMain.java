@@ -4,6 +4,7 @@ package es.charlye.coches.Frames;
 import es.charlye.coches.DAO.DAOManager;
 import es.charlye.coches.DAO.MariaDB.MariaDBDAOManager;
 import es.charlye.coches.Exception.DAOException;
+import es.charlye.coches.Modelo.Averia;
 import es.charlye.coches.Modelo.Vehiculo;
 import es.charlye.coches.TableModel.AlarmTableModel;
 
@@ -144,8 +145,8 @@ public class JFrameMain extends JFrame {
 						JDialogDeleteUser dialog = new JDialogDeleteUser(manager,usuario);
 						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						dialog.setVisible(true);
-							if(manager.getUsuarioDAO().existe(usuario))
-								dispose();
+						if(manager.getUsuarioDAO().existe(usuario))
+							dispose();
 					} catch (DAOException e1) {
 						e1.printStackTrace();
 					}
@@ -237,23 +238,37 @@ public class JFrameMain extends JFrame {
 		
 		JPanel Mensual = new JPanel();
 		Mensual.setBorder(new LineBorder(Color.GRAY));
+		
+		JButton btnReparacionesPorVehculo = new JButton("Reparaciones por vehículo");
+		btnReparacionesPorVehculo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JDialogPropietarios dialog;
+				try {
+					dialog = new JDialogPropietarios(manager,"");
+					dialog.setVisible(true);
+				} catch (DAOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(scrollPane, Alignment.LEADING)
-						.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 763, Short.MAX_VALUE)
+						.addGroup(gl_contentPane.createSequentialGroup()
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_contentPane.createSequentialGroup()
 									.addComponent(lblUsuario)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(txtUser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-								.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 247, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 259, GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnReparacionesPorVehculo, GroupLayout.PREFERRED_SIZE, 221, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(insertarAveria, GroupLayout.PREFERRED_SIZE, 498, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(29, Short.MAX_VALUE))
+					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -265,7 +280,9 @@ public class JFrameMain extends JFrame {
 								.addComponent(lblUsuario)
 								.addComponent(txtUser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE))
+							.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnReparacionesPorVehculo))
 						.addComponent(insertarAveria, GroupLayout.PREFERRED_SIZE, 273, GroupLayout.PREFERRED_SIZE))
 					.addGap(12)
 					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
@@ -275,7 +292,7 @@ public class JFrameMain extends JFrame {
 		JMonthChooser monthChooser = new JMonthChooser();
 		JYearChooser yearChooser = new JYearChooser();
 		
-		JButton btnReparaciones = new JButton("Reparaciones");
+		JButton btnReparaciones = new JButton("Ver Reparaciones Mensuales");
 		btnReparaciones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String fecha=yearChooser.getValue()+"-"+(monthChooser.getMonth()+1);
@@ -291,19 +308,18 @@ public class JFrameMain extends JFrame {
 		
 		GroupLayout gl_Mensual = new GroupLayout(Mensual);
 		gl_Mensual.setHorizontalGroup(
-			gl_Mensual.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_Mensual.createSequentialGroup()
-					.addGroup(gl_Mensual.createParallelGroup(Alignment.TRAILING)
-						.addGroup(Alignment.LEADING, gl_Mensual.createSequentialGroup()
-							.addGap(24)
-							.addComponent(btnReparaciones, GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
+			gl_Mensual.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_Mensual.createSequentialGroup()
+					.addGroup(gl_Mensual.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_Mensual.createSequentialGroup()
+							.addGap(18)
+							.addComponent(monthChooser, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(yearChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_Mensual.createSequentialGroup()
 							.addContainerGap()
-							.addComponent(monthChooser, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(yearChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)))
-					.addGap(60))
+							.addComponent(btnReparaciones)))
+					.addContainerGap(29, Short.MAX_VALUE))
 		);
 		gl_Mensual.setVerticalGroup(
 			gl_Mensual.createParallelGroup(Alignment.LEADING)
@@ -312,9 +328,9 @@ public class JFrameMain extends JFrame {
 					.addGroup(gl_Mensual.createParallelGroup(Alignment.LEADING)
 						.addComponent(yearChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(monthChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnReparaciones)
-					.addContainerGap())
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		Mensual.setLayout(gl_Mensual);
 		
@@ -338,7 +354,7 @@ public class JFrameMain extends JFrame {
 		
 		JDateChooser dateChooser = new JDateChooser(c.getTime());
 		dateChooser.setBackground(new Color(214, 217, 223));
-		dateChooser.setDateFormatString("dd-MM-YYYY");
+		dateChooser.setDateFormatString("YYYY-MM-dd");
 		JTextFieldDateEditor editor = (JTextFieldDateEditor) dateChooser.getDateEditor();
 		editor.setEditable(false);
 		
@@ -382,18 +398,6 @@ public class JFrameMain extends JFrame {
 		
 		JLabel lblComentarioAveria = new JLabel("Comentario Reparación");
 		
-		JButton btnCrearReparacion = new JButton("Crear Reparación");
-		btnCrearReparacion.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				vehiculo=null;
-				 txtID.setText("");
-				 txtMarca.setText("");
-				 txtModelo.setText("");
-			}
-		});
-		
 		JLabel lblPrecioRecambios = new JLabel("Precio Recambios:");
 		
 		txtRecambios = new JFormattedTextField();
@@ -422,6 +426,33 @@ public class JFrameMain extends JFrame {
 		txtCobrado = new JFormattedTextField();
 		txtCobrado.setColumns(10);
 		txtCobrado.setFormatterFactory(currFactory);
+		
+		JButton btnCrearReparacion = new JButton("Crear Reparación");
+		btnCrearReparacion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if(!txtID.getText().equals("") && !txtMarca.getText().equals("") && !comenAveria.getText().equals("") && !txtRecambios.getText().equals("") && !txtCobrado.getText().equals("")){
+						manager.getAveriaDAO().insertar(
+								new Averia(
+										new Long(txtID.getText()),
+										String.format("%1$tY-%1$tm-%1$td",dateChooser.getDate()),
+										comenAveria.getText(),
+										new Double(txtRecambios.getText().substring(0, txtRecambios.getText().length()-2).replaceAll(",", ".")),
+										new Double (txtCobrado.getText().substring(0, txtCobrado.getText().length()-2).replaceAll(",", ".")))
+								);
+						JOptionPane.showMessageDialog(btnCrearReparacion, "Reparacion insertada correctamente.", "Reparacion insertada",1);
+					}else
+						JOptionPane.showMessageDialog(btnCrearReparacion, "Algun campo esta vacío", "Campo Vacío",1);
+				} catch (DAOException e1) {
+					e1.printStackTrace();
+				}
+				
+				vehiculo=null;
+				 txtID.setText("");
+				 txtMarca.setText("");
+				 txtModelo.setText("");
+			}
+		});
 		
 		GroupLayout gl_insertarAveria = new GroupLayout(insertarAveria);
 		gl_insertarAveria.setHorizontalGroup(

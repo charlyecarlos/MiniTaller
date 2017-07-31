@@ -7,17 +7,23 @@ import es.charlye.coches.Exception.DAOException;
 import es.charlye.coches.TableModel.VehiculosTableModel;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.GroupLayout;
+import javax.swing.InputMap;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 
@@ -105,6 +111,22 @@ public class JDialogVehiculos extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 
 				getContentPane().setLayout(groupLayout);
+				
+				int condition = JComponent.WHEN_FOCUSED;
+				  InputMap iMap = table.getInputMap(condition);
+				  ActionMap aMap = table.getActionMap();
+
+				  String enter = "enter";
+				  iMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enter);
+				  aMap.put(enter, new AbstractAction() {
+
+					private static final long serialVersionUID = -1096446379404108663L;
+
+					@Override
+				     public void actionPerformed(ActionEvent arg0) {
+				    	 okButton.doClick();
+				     }
+				  });
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");

@@ -80,13 +80,13 @@ public class JDialogFechaAverias extends JDialog {
 			sumatotal+=new Double (table.getModel().getValueAt(i, 5).toString());
 		}
 		
-		JLabel lblTotalRepuesto = new JLabel("Total Repuesto:"+sumarepuestos+"      ");
+		JLabel lblTotalRepuesto = new JLabel("Total Repuesto:"+sumarepuestos+"€     ");
 		buttonPane.add(lblTotalRepuesto);
 		
-		JLabel lblTotalCobrado = new JLabel("Total Cobrado:"+sumacobrado+"      ");
+		JLabel lblTotalCobrado = new JLabel("Total Cobrado:"+sumacobrado+"€     ");
 		buttonPane.add(lblTotalCobrado);
 		
-		JLabel lblBeneficioTotal = new JLabel("Beneficio total:"+sumatotal+"     ");
+		JLabel lblBeneficioTotal = new JLabel("Beneficio total:"+sumatotal+"€    ");
 		buttonPane.add(lblBeneficioTotal);
 
 		getContentPane().setLayout(groupLayout);
