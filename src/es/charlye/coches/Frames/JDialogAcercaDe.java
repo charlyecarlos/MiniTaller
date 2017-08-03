@@ -18,10 +18,11 @@ public class JDialogAcercaDe extends JDialog {
 	private static final long serialVersionUID = 8049477898516313450L;
 	private final JPanel contentPanel = new JPanel();
 
-		/**
+	/**
 	 * Create the dialog.
 	 */
 	public JDialogAcercaDe() {
+			setResizable(false);
 		setTitle("Acerca de");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JDialogAcercaDe.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
 		setBounds(100, 100, 422, 216);

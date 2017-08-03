@@ -170,10 +170,10 @@ public class JFrameMain extends JFrame {
 			}
 		});	
 		
-		if(usuario=="root")
+		if(usuario.equals("root"))
 			mntmEliminarCuenta.setEnabled(false);
 		
-		if(usuario=="root"){
+		if(usuario.equals("root")){
 			JMenu mnAdministrador = new JMenu("Administrador");
 			menuBar.add(mnAdministrador);
 			
