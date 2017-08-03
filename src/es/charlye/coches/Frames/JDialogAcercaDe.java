@@ -24,7 +24,7 @@ public class JDialogAcercaDe extends JDialog {
 	public JDialogAcercaDe() {
 		setTitle("Acerca de");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JDialogAcercaDe.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
-		setBounds(100, 100, 422, 281);
+		setBounds(100, 100, 422, 216);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.EAST);
@@ -48,15 +48,16 @@ public class JDialogAcercaDe extends JDialog {
 		JLabel lblBBDD = new JLabel("Utiliza base de datos MariaSQL");
 		lblBBDD.setHorizontalAlignment(SwingConstants.CENTER);
 		lblBBDD.setFont(new Font("Dialog", Font.PLAIN, 12));
+		
+		JLabel lblLicencia = new JLabel("Este programa tiene licencia GNU v3.0");
+		lblLicencia.setHorizontalAlignment(SwingConstants.CENTER);
+		lblLicencia.setFont(new Font("Dialog", Font.PLAIN, 12));
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPanel.createSequentialGroup()
-							.addComponent(lblBBDD, GroupLayout.PREFERRED_SIZE, 388, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())
 						.addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING)
 							.addGroup(gl_contentPanel.createSequentialGroup()
 								.addComponent(lblAbout, GroupLayout.PREFERRED_SIZE, 179, GroupLayout.PREFERRED_SIZE)
@@ -69,7 +70,13 @@ public class JDialogAcercaDe extends JDialog {
 								.addContainerGap())
 							.addGroup(gl_contentPanel.createSequentialGroup()
 								.addComponent(lblFramework, GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
-								.addContainerGap()))))
+								.addContainerGap()))
+						.addGroup(gl_contentPanel.createSequentialGroup()
+							.addComponent(lblBBDD, GroupLayout.PREFERRED_SIZE, 388, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())))
+				.addGroup(gl_contentPanel.createSequentialGroup()
+					.addComponent(lblLicencia, GroupLayout.PREFERRED_SIZE, 388, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(24, Short.MAX_VALUE))
 		);
 		gl_contentPanel.setVerticalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
@@ -83,7 +90,9 @@ public class JDialogAcercaDe extends JDialog {
 					.addComponent(lblFramework, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblBBDD)
-					.addContainerGap(107, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblLicencia)
+					.addContainerGap(62, Short.MAX_VALUE))
 		);
 		contentPanel.setLayout(gl_contentPanel);
 		setLocationRelativeTo(null);

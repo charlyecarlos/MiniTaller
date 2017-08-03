@@ -30,9 +30,6 @@ import java.awt.BorderLayout;
 
 public class JDialogDeleteUser extends JDialog {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6536862617980778597L;
 	private final JPanel contentPanel = new JPanel();
 	private JPasswordField passwordField;

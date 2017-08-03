@@ -2,7 +2,6 @@ package es.charlye.coches.Frames;
 
 
 import es.charlye.coches.DAO.DAOManager;
-import es.charlye.coches.DAO.MariaDB.MariaDBDAOManager;
 import es.charlye.coches.Exception.DAOException;
 import es.charlye.coches.TableModel.VehiculosTableModel;
 
@@ -33,19 +32,6 @@ public class JDialogVehiculos extends JDialog {
 	private JPanel buttonPane;
 	private JTable table;
 	private VehiculosTableModel model;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			DAOManager manager=new MariaDBDAOManager("localhost","coches", "coches", "Coches");
-			JDialogVehiculos dialog=new JDialogVehiculos(manager,new Long(1),1);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.

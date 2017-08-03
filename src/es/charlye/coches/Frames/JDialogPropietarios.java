@@ -3,7 +3,6 @@ package es.charlye.coches.Frames;
 
 
 import es.charlye.coches.DAO.DAOManager;
-import es.charlye.coches.DAO.MariaDB.MariaDBDAOManager;
 import es.charlye.coches.Exception.DAOException;
 import es.charlye.coches.TableModel.PropietariosTableModel;
 
@@ -34,20 +33,6 @@ public class JDialogPropietarios extends JDialog {
 	private JPanel buttonPane;
 	private JTable table;
 	private PropietariosTableModel model;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			DAOManager manager=new MariaDBDAOManager("localhost","coches", "coches", "Coches");
-			JDialogPropietarios dialog = new JDialogPropietarios(manager,"perez",1);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
