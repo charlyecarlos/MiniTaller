@@ -18,7 +18,7 @@ public class JDialogAcercaDe extends JDialog {
 	private static final long serialVersionUID = 8049477898516313450L;
 	private final JPanel contentPanel = new JPanel();
 
-	/**
+		/**
 	 * Create the dialog.
 	 */
 	public JDialogAcercaDe() {
