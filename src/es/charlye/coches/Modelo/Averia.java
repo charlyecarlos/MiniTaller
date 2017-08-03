@@ -8,9 +8,10 @@ public class Averia {
 	private String comen_averia;
 	private double precio_repuesto;
 	private double precio_cobrado;
+	private int km;
 
 	public Averia(Long id_averia, Long id_vehi, String fecha_averia, String comen_averia, double precio_repuesto,
-			double precio_cobrado) {
+			double precio_cobrado,int km) {
 		super();
 		this.id_averia = id_averia;
 		this.id_vehi = id_vehi;
@@ -18,16 +19,18 @@ public class Averia {
 		this.comen_averia = comen_averia;
 		this.precio_repuesto = precio_repuesto;
 		this.precio_cobrado = precio_cobrado;
+		this.km=km;
 	}
 
 	public Averia(Long id_vehi, String fecha_averia, String comen_averia, double precio_repuesto,
-			double precio_cobrado) {
+			double precio_cobrado,int km) {
 		super();
 		this.id_vehi = id_vehi;
 		this.fecha_averia = fecha_averia;
 		this.comen_averia = comen_averia;
 		this.precio_repuesto = precio_repuesto;
 		this.precio_cobrado = precio_cobrado;
+		this.km=km;
 	}
 
 
@@ -80,11 +83,19 @@ public class Averia {
 		this.precio_cobrado = precio_cobrado;
 	}
 
+	public int getKm() {
+		return km;
+	}
+
+	public void setKm(int km) {
+		this.km = km;
+	}
+
 	@Override
 	public String toString() {
 		return "Averia [id_averia=" + id_averia + ", id_vehi=" + id_vehi + ", fecha_averia=" + fecha_averia
 				+ ", comen_averia=" + comen_averia + ", precio_repuesto=" + precio_repuesto + ", precio_cobrado="
-				+ precio_cobrado + "]";
+				+ precio_cobrado + ", km=" + km + "]";
 	}
 
 	@Override
@@ -95,6 +106,7 @@ public class Averia {
 		result = prime * result + ((fecha_averia == null) ? 0 : fecha_averia.hashCode());
 		result = prime * result + ((id_averia == null) ? 0 : id_averia.hashCode());
 		result = prime * result + ((id_vehi == null) ? 0 : id_vehi.hashCode());
+		result = prime * result + km;
 		long temp;
 		temp = Double.doubleToLongBits(precio_cobrado);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -132,11 +144,12 @@ public class Averia {
 				return false;
 		} else if (!id_vehi.equals(other.id_vehi))
 			return false;
+		if (km != other.km)
+			return false;
 		if (Double.doubleToLongBits(precio_cobrado) != Double.doubleToLongBits(other.precio_cobrado))
 			return false;
 		if (Double.doubleToLongBits(precio_repuesto) != Double.doubleToLongBits(other.precio_repuesto))
 			return false;
 		return true;
 	}
-	
 }

@@ -12,10 +12,11 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.text.NumberFormat;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Font;
+
+import java.text.NumberFormat;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -67,6 +68,7 @@ public class JFrameMain extends JFrame {
 	private JTextField txtUser;
 	private JFormattedTextField txtRecambios;
 	private JFormattedTextField txtCobrado;
+	private JFormattedTextField txtKm;
 
 	/**
 	 * Launch the application.
@@ -244,7 +246,7 @@ public class JFrameMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JDialogPropietarios dialog;
 				try {
-					dialog = new JDialogPropietarios(manager,"");
+					dialog = new JDialogPropietarios(manager,"",1);	// 1 significa que al dar OK en vehiculos sale sus reparaciones.
 					dialog.setVisible(true);
 				} catch (DAOException e1) {
 					e1.printStackTrace();
@@ -264,8 +266,10 @@ public class JFrameMain extends JFrame {
 									.addComponent(lblUsuario)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(txtUser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-								.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 259, GroupLayout.PREFERRED_SIZE)
-								.addComponent(btnReparacionesPorVehculo, GroupLayout.PREFERRED_SIZE, 221, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addGap(17)
+									.addComponent(btnReparacionesPorVehculo, GroupLayout.PREFERRED_SIZE, 221, GroupLayout.PREFERRED_SIZE))
+								.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 259, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(insertarAveria, GroupLayout.PREFERRED_SIZE, 498, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
@@ -280,12 +284,12 @@ public class JFrameMain extends JFrame {
 								.addComponent(lblUsuario)
 								.addComponent(txtUser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+							.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnReparacionesPorVehculo))
-						.addComponent(insertarAveria, GroupLayout.PREFERRED_SIZE, 273, GroupLayout.PREFERRED_SIZE))
-					.addGap(12)
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+						.addComponent(insertarAveria, GroupLayout.PREFERRED_SIZE, 255, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		
@@ -319,15 +323,15 @@ public class JFrameMain extends JFrame {
 						.addGroup(gl_Mensual.createSequentialGroup()
 							.addContainerGap()
 							.addComponent(btnReparaciones)))
-					.addContainerGap(29, Short.MAX_VALUE))
+					.addContainerGap(41, Short.MAX_VALUE))
 		);
 		gl_Mensual.setVerticalGroup(
 			gl_Mensual.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_Mensual.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_Mensual.createParallelGroup(Alignment.LEADING)
-						.addComponent(yearChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(monthChooser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGroup(gl_Mensual.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(yearChooser, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(monthChooser, GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnReparaciones)
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -344,22 +348,21 @@ public class JFrameMain extends JFrame {
 		txtID.setEnabled(false);
 		txtID.setColumns(10);
 		
-		JLabel lblNombrePropietario = new JLabel("Nombre Propietario:");
+		JLabel lblNombrePropietario = new JLabel("Nombre Prop.:");
 		
 		txtModelo = new JTextField();
 		txtModelo.setEnabled(false);
 		txtModelo.setColumns(10);
 		
-		Calendar c = Calendar.getInstance();
-		
+		Calendar c = Calendar.getInstance();	
 		JDateChooser dateChooser = new JDateChooser(c.getTime());
 		dateChooser.setBackground(new Color(214, 217, 223));
-		dateChooser.setDateFormatString("YYYY-MM-dd");
+		dateChooser.setDateFormatString("yyyy-MM-dd");
 		JTextFieldDateEditor editor = (JTextFieldDateEditor) dateChooser.getDateEditor();
 		editor.setEditable(false);
 		
 		JLabel lblCoche = new JLabel("Coche:");
-		lblCoche.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCoche.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		txtPropietario = new JTextField();
 		
@@ -375,7 +378,7 @@ public class JFrameMain extends JFrame {
 			@Override
 		     public void actionPerformed(ActionEvent arg0) {
 		    	 try {
-	    			 JDialogPropietarios dialog = new JDialogPropietarios(manager,txtPropietario.getText());
+	    			 JDialogPropietarios dialog = new JDialogPropietarios(manager,txtPropietario.getText(),0);	// 1 significa que al dar OK en vehículos rellena los datos del main.
 	    			 dialog.setVisible(true);
 	    			 if(vehiculo!=null){
 	    				 txtID.setText(vehiculo.getId_vehi().toString());
@@ -431,14 +434,15 @@ public class JFrameMain extends JFrame {
 		btnCrearReparacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(!txtID.getText().equals("") && !txtMarca.getText().equals("") && !comenAveria.getText().equals("") && !txtRecambios.getText().equals("") && !txtCobrado.getText().equals("")){
+					if(!txtID.getText().equals("") && !txtMarca.getText().equals("") && !comenAveria.getText().equals("") && !txtRecambios.getText().equals("") && !txtCobrado.getText().equals("") && !txtKm.getText().equals("")){
 						manager.getAveriaDAO().insertar(
 								new Averia(
-										new Long(txtID.getText()),
-										String.format("%1$tY-%1$tm-%1$td",dateChooser.getDate()),
-										comenAveria.getText(),
-										new Double(txtRecambios.getText().substring(0, txtRecambios.getText().length()-2).replaceAll(",", ".")),
-										new Double (txtCobrado.getText().substring(0, txtCobrado.getText().length()-2).replaceAll(",", ".")))
+									new Long(txtID.getText()),
+									String.format("%1$tY-%1$tm-%1$td",dateChooser.getDate()),
+									comenAveria.getText(),
+									new Double(txtRecambios.getText().substring(0, txtRecambios.getText().length()-2).replaceAll(",", ".")),
+									new Double (txtCobrado.getText().substring(0, txtCobrado.getText().length()-2).replaceAll(",", ".")),
+									Integer.parseInt(txtKm.getText()))	
 								);
 						JOptionPane.showMessageDialog(btnCrearReparacion, "Reparacion insertada correctamente.", "Reparacion insertada",1);
 					}else
@@ -446,7 +450,11 @@ public class JFrameMain extends JFrame {
 				} catch (DAOException e1) {
 					e1.printStackTrace();
 				}
-				
+				txtPropietario.setText("");
+				dateChooser.setDate(c.getTime());
+				comenAveria.setText("");
+				txtRecambios.setText("");
+				txtCobrado.setText("");
 				vehiculo=null;
 				 txtID.setText("");
 				 txtMarca.setText("");
@@ -454,91 +462,101 @@ public class JFrameMain extends JFrame {
 			}
 		});
 		
+		JLabel lblKmActual = new JLabel("Km Actual:");
+		
+		txtKm = new JFormattedTextField();
+		txtKm.setColumns(10);
+		
 		GroupLayout gl_insertarAveria = new GroupLayout(insertarAveria);
 		gl_insertarAveria.setHorizontalGroup(
-			gl_insertarAveria.createParallelGroup(Alignment.TRAILING)
+			gl_insertarAveria.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_insertarAveria.createSequentialGroup()
 					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING, false)
+							.addGroup(gl_insertarAveria.createSequentialGroup()
+								.addGap(143)
+								.addComponent(lblInsertarAveria, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE))
+							.addGroup(gl_insertarAveria.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_insertarAveria.createSequentialGroup()
+										.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
+											.addGroup(gl_insertarAveria.createSequentialGroup()
+												.addComponent(lblNombrePropietario)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(txtPropietario, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(lblPrecioCobrado))
+											.addGroup(gl_insertarAveria.createSequentialGroup()
+												.addComponent(lblId, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(txtID, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(dateChooser, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(lblPrecioRecambios)))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING, false)
+											.addComponent(txtRecambios, GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+											.addComponent(txtCobrado, 0, 0, Short.MAX_VALUE)))
+									.addGroup(gl_insertarAveria.createSequentialGroup()
+										.addComponent(lblCoche, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(txtMarca, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(txtModelo, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(lblKmActual)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(txtKm, GroupLayout.PREFERRED_SIZE, 71, GroupLayout.PREFERRED_SIZE))))
+							.addGroup(gl_insertarAveria.createSequentialGroup()
+								.addGap(121)
+								.addComponent(btnCrearReparacion, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE))
+							.addGroup(gl_insertarAveria.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(comenAveria)))
 						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING, false)
-								.addGroup(gl_insertarAveria.createSequentialGroup()
-									.addComponent(lblCoche, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(txtMarca, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
-									.addGap(18)
-									.addComponent(txtModelo))
-								.addGroup(gl_insertarAveria.createSequentialGroup()
-									.addComponent(lblNombrePropietario)
-									.addGap(18)
-									.addComponent(txtPropietario, GroupLayout.PREFERRED_SIZE, 178, GroupLayout.PREFERRED_SIZE))))
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(lblId, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtID, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
-							.addGap(36)
-							.addComponent(dateChooser, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addGap(88)
-							.addComponent(lblComentarioAveria, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addGap(121)
-							.addComponent(btnCrearReparacion, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addGap(143)
-							.addComponent(lblInsertarAveria, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(comenAveria, GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblPrecioRecambios)
-						.addComponent(lblPrecioCobrado)
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addGap(6)
-							.addComponent(txtCobrado, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addGap(6)
-							.addComponent(txtRecambios, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-					.addGap(32))
+							.addGap(140)
+							.addComponent(lblComentarioAveria, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(43, Short.MAX_VALUE))
 		);
 		gl_insertarAveria.setVerticalGroup(
 			gl_insertarAveria.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_insertarAveria.createSequentialGroup()
 					.addComponent(lblInsertarAveria, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
-					.addGap(12)
-					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(dateChooser, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGroup(gl_insertarAveria.createParallelGroup(Alignment.BASELINE)
-							.addComponent(lblId, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-							.addComponent(txtID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-					.addGap(11)
-					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblNombrePropietario, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-						.addComponent(txtPropietario, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblPrecioRecambios))
+					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_insertarAveria.createSequentialGroup()
+							.addGap(12)
+							.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(dateChooser, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addGroup(gl_insertarAveria.createParallelGroup(Alignment.BASELINE)
+									.addComponent(lblId, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+									.addComponent(txtID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addGap(11)
+							.addGroup(gl_insertarAveria.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblNombrePropietario, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtPropietario, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(txtCobrado, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblPrecioCobrado)))
+						.addGroup(gl_insertarAveria.createSequentialGroup()
+							.addGap(18)
+							.addGroup(gl_insertarAveria.createParallelGroup(Alignment.BASELINE)
+								.addComponent(txtRecambios, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblPrecioRecambios))))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.BASELINE)
 						.addComponent(txtMarca, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblCoche, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
 						.addComponent(txtModelo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(txtRecambios, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addGap(1)
-							.addComponent(lblComentarioAveria, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblPrecioCobrado)))
+						.addComponent(lblKmActual)
+						.addComponent(txtKm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(1)
+					.addComponent(lblComentarioAveria, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_insertarAveria.createSequentialGroup()
-							.addComponent(comenAveria, GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnCrearReparacion))
-						.addComponent(txtCobrado, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+					.addComponent(comenAveria, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnCrearReparacion)
+					.addContainerGap(9, Short.MAX_VALUE))
 		);
 		insertarAveria.setLayout(gl_insertarAveria);
 		

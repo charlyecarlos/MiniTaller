@@ -13,13 +13,13 @@ import es.charlye.coches.Modelo.Averia;
 
 public class MariaDBAveriaDAO implements AveriaDAO {
 
-	final String INSERT="INSERT INTO AVERIA(ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO) VALUES (?,?,?,?,?)";
-	final String UPDATE="UPDATE AVERIA SET ID_AVERIA=?,ID_VEHI=?,FECHA_AVERIA=?,COMEN_AVERIA=?,PRECIO_REPUESTO=?,PRECIO_COBRADO=?";
+	final String INSERT="INSERT INTO AVERIA(ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO,KM_ACTUAL) VALUES (?,?,?,?,?,?)";
+	final String UPDATE="UPDATE AVERIA SET ID_AVERIA=?,ID_VEHI=?,FECHA_AVERIA=?,COMEN_AVERIA=?,PRECIO_REPUESTO=?,PRECIO_COBRADO=?,KM_ACTUAL=?";
 	final String DELETE="DELETE FROM AVERIA WHERE ID_AVERIA=?";
-	final String GETALL="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO FROM AVERIA";
-	final String GETGROUP="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO FROM AVERIA WHERE ID_VEHI 	= ?";
-	final String GETONE="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO FROM AVERIA WHERE ID_AVERIA = ?";
-	final String GETMONTH="SELECT `ID_AVERIA`, `ID_VEHI`, `FECHA_AVERIA`, `COMEN_AVERIA`, `PRECIO_REPUESTO`, `PRECIO_COBRADO` FROM `AVERIA` WHERE FECHA_AVERIA BETWEEN ? AND LAST_DAY(?)";
+	final String GETALL="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO,KM_ACTUAL FROM AVERIA";
+	final String GETGROUP="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO,KM_ACTUAL FROM AVERIA WHERE ID_VEHI = ? ORDER BY FECHA_AVERIA DESC";
+	final String GETONE="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO,KM_ACTUAL FROM AVERIA WHERE ID_AVERIA = ?";
+	final String GETMONTH="SELECT ID_AVERIA,ID_VEHI,FECHA_AVERIA,COMEN_AVERIA,PRECIO_REPUESTO,PRECIO_COBRADO,KM_ACTUAL FROM AVERIA WHERE FECHA_AVERIA BETWEEN ? AND LAST_DAY(?)";
 		
 	private Connection conn;
 	private List<Averia> averias;
@@ -38,6 +38,7 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 			stat.setString(3, a.getComen_averia());
 			stat.setDouble(4, a.getPrecio_repuesto());
 			stat.setDouble(5, a.getPrecio_cobrado());
+			stat.setInt(6, a.getKm());
 			if(stat.executeUpdate()==0)
 				throw new DAOException("Puede que no se haya guardado.");
 		} catch (SQLException e) {
@@ -107,7 +108,7 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 			stat = conn.prepareStatement(GETALL);
 			ResultSet set=stat.executeQuery();
 			while(set.next())
-				averias.add(new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6)));
+				averias.add(new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6),set.getInt(7)));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{
@@ -130,7 +131,7 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 			stat.setLong(1, id);
 			ResultSet set=stat.executeQuery();
 			set.next();
-			averia=new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6));
+			averia=new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6),set.getInt(7));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{
@@ -155,7 +156,7 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 			stat.setLong(1, id);
 			ResultSet set=stat.executeQuery();
 			while(set.next()){
-				Averia averia=new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6));
+				Averia averia=new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6),set.getInt(7));
 				averias.add(averia);
 			}		
 		} catch (SQLException e) {
@@ -181,7 +182,7 @@ public class MariaDBAveriaDAO implements AveriaDAO {
 			stat.setString(2, fecha+"-1");
 			ResultSet set=stat.executeQuery();
 			while(set.next())
-				averias.add(new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6)));
+				averias.add(new Averia(set.getLong(1),set.getLong(2),set.getString(3),set.getString(4),set.getDouble(5),set.getDouble(6),set.getInt(7)));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{

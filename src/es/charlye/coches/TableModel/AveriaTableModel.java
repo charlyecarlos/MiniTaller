@@ -21,7 +21,7 @@ public class AveriaTableModel extends AbstractTableModel{
 
 	@Override
 	public int getColumnCount() {
-		return 6;
+		return 7;
 	}
 
 	@Override
@@ -36,9 +36,10 @@ public class AveriaTableModel extends AbstractTableModel{
 		case 0:return preguntado.getId_averia();
 		case 1:return preguntado.getFecha_averia();
 		case 2:return preguntado.getComen_averia();
-		case 3:return preguntado.getPrecio_repuesto();
-		case 4:return preguntado.getPrecio_cobrado();
-		case 5:return (preguntado.getPrecio_cobrado()-preguntado.getPrecio_repuesto());
+		case 3:return preguntado.getKm();
+		case 4:return preguntado.getPrecio_repuesto();
+		case 5:return preguntado.getPrecio_cobrado();
+		case 6:return (preguntado.getPrecio_cobrado()-preguntado.getPrecio_repuesto());
 		default: return "";
 		}
 	}
@@ -48,9 +49,10 @@ public class AveriaTableModel extends AbstractTableModel{
 		case 0:return "ID_Averia";
 		case 1:return "Fecha Averia";
 		case 2:return "Comentario";
-		case 3:return "Precio Repuesto";
-		case 4:return "Precio Cobrado";
-		case 5:return "Beneficio";
+		case 3:return "Km actuales";
+		case 4:return "Precio Repuesto";
+		case 5:return "Precio Cobrado";
+		case 6:return "Beneficio";
 		default:return "[Desconocido]";
 		}
 	}

@@ -41,7 +41,7 @@ public class JDialogPropietarios extends JDialog {
 	public static void main(String[] args) {
 		try {
 			DAOManager manager=new MariaDBDAOManager("localhost","coches", "coches", "Coches");
-			JDialogPropietarios dialog = new JDialogPropietarios(manager,"perez");
+			JDialogPropietarios dialog = new JDialogPropietarios(manager,"perez",1);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -53,7 +53,7 @@ public class JDialogPropietarios extends JDialog {
 	 * Create the dialog.
 	 * @throws DAOException 
 	 */
-	public JDialogPropietarios(DAOManager manager,String nombre) throws DAOException {
+	public JDialogPropietarios(DAOManager manager,String nombre,int btn) throws DAOException {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JFrameAutenticator.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
 		setTitle("Clientes");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -95,7 +95,7 @@ public class JDialogPropietarios extends JDialog {
 							int row=table.getSelectedRow();
 							if(row!=-1){
 								Long id=new Long(table.getModel().getValueAt(row, 0).toString());
-								JDialogVehiculos dialog = new JDialogVehiculos(manager,id);
+								JDialogVehiculos dialog = new JDialogVehiculos(manager,id,btn);
 								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 								dialog.setVisible(true);
 								dispose();

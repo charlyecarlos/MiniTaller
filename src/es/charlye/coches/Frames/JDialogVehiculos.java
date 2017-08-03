@@ -40,7 +40,7 @@ public class JDialogVehiculos extends JDialog {
 	public static void main(String[] args) {
 		try {
 			DAOManager manager=new MariaDBDAOManager("localhost","coches", "coches", "Coches");
-			JDialogVehiculos dialog=new JDialogVehiculos(manager,new Long(1));
+			JDialogVehiculos dialog=new JDialogVehiculos(manager,new Long(1),1);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -51,7 +51,7 @@ public class JDialogVehiculos extends JDialog {
 	 * Create the dialog.
 	 * @throws DAOException 
 	 */
-	public JDialogVehiculos(DAOManager manager,Long id) throws DAOException {
+	public JDialogVehiculos(DAOManager manager,Long id,int btn) throws DAOException {
 		setTitle("Vehiculos");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JDialogVehiculos.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
@@ -96,10 +96,16 @@ public class JDialogVehiculos extends JDialog {
 					public void actionPerformed(ActionEvent arg0) {
 						int row=table.getSelectedRow();
 						if(row!=-1){
-							try {
-								JFrameMain.setVehiculo(manager.getVehiculoDAO().obtener(new Long(table.getModel().getValueAt(row, 0).toString())));
-							} catch (NumberFormatException | DAOException e) {
-								e.printStackTrace();
+							if(btn==0)
+								try {
+									JFrameMain.setVehiculo(manager.getVehiculoDAO().obtener(new Long(table.getModel().getValueAt(row, 0).toString())));
+								} catch (NumberFormatException | DAOException e) {
+									e.printStackTrace();
+								}
+							else{
+								JDialogAverias dialog = new JDialogAverias(manager,new Long(table.getModel().getValueAt(row, 0).toString()));
+								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+								dialog.setVisible(true);
 							}
 							dispose();
 						}else
