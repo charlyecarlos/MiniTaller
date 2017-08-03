@@ -2,13 +2,20 @@ package es.charlye.coches.Frames;
 
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.GroupLayout;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
@@ -68,7 +75,7 @@ public class JDialogAverias extends JDialog {
 					.addContainerGap())
 		);
 		
-		JLabel lblReparacionesSeleccionadas = new JLabel("Reparaciones seleccionadas: "+table.getRowCount()+"      ");
+		JLabel lblReparacionesSeleccionadas = new JLabel("Reparaciones: "+table.getRowCount()+"      ");
 		buttonPane.add(lblReparacionesSeleccionadas);
 
 		double sumarepuestos=0;
@@ -88,6 +95,25 @@ public class JDialogAverias extends JDialog {
 		
 		JLabel lblBeneficioTotal = new JLabel("Beneficio total:"+sumatotal+"€    ");
 		buttonPane.add(lblBeneficioTotal);
+		
+		 int condition = JComponent.WHEN_FOCUSED;
+		  InputMap iMap = table.getInputMap(condition);
+		  ActionMap aMap = table.getActionMap();
+
+		  String enter = "enter";
+		  iMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), enter);
+		  aMap.put(enter, new AbstractAction() {
+			private static final long serialVersionUID = 3378381940748924908L;
+
+			@Override
+		     public void actionPerformed(ActionEvent arg0) {
+		    	 try {
+		    		 dispose();
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+		     }
+		  });
 
 		getContentPane().setLayout(groupLayout);
 	    setLocationRelativeTo(null);

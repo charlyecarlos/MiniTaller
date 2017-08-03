@@ -107,6 +107,16 @@ public class JDialogPropietarios extends JDialog {
 						}
 					}
 				});
+				
+				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						dispose();
+					}
+				});
+				cancelButton.setActionCommand("Cancel");
+				buttonPane.add(cancelButton);
+				
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
@@ -126,16 +136,17 @@ public class JDialogPropietarios extends JDialog {
 				    	 okButton.doClick();
 				     }
 				  });
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						dispose();
+				  
+				  String esc="escape";
+				  iMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0), esc);
+				  aMap.put(esc, new AbstractAction() {
+					private static final long serialVersionUID = 2534847686793735315L;
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						cancelButton.doClick();
 					}
-				});
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				});	  
 			}
 		}
 		

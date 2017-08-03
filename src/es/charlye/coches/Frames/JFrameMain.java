@@ -366,30 +366,30 @@ public class JFrameMain extends JFrame {
 		
 		txtPropietario = new JTextField();
 		
-		 int condition = JComponent.WHEN_FOCUSED;
-		  InputMap iMap = txtPropietario.getInputMap(condition);
-		  ActionMap aMap = txtPropietario.getActionMap();
-
-		  String enter = "enter";
-		  iMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enter);
-		  aMap.put(enter, new AbstractAction() {
+		int condition = JComponent.WHEN_FOCUSED;
+		InputMap iMap = txtPropietario.getInputMap(condition);
+		ActionMap aMap = txtPropietario.getActionMap();
+		
+		String enter = "enter";
+		iMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enter);
+		aMap.put(enter, new AbstractAction() {
 			private static final long serialVersionUID = 3378381940748924908L;
-
+			
 			@Override
-		     public void actionPerformed(ActionEvent arg0) {
-		    	 try {
-	    			 JDialogPropietarios dialog = new JDialogPropietarios(manager,txtPropietario.getText(),0);	// 1 significa que al dar OK en vehículos rellena los datos del main.
-	    			 dialog.setVisible(true);
-	    			 if(vehiculo!=null){
-	    				 txtID.setText(vehiculo.getId_vehi().toString());
-	    				 txtMarca.setText(vehiculo.getMarca());
-	    				 txtModelo.setText(vehiculo.getModelo());
-	    			 }
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					JDialogPropietarios dialog = new JDialogPropietarios(manager,txtPropietario.getText(),0);	// 1 significa que al dar OK en vehículos rellena los datos del main.
+					dialog.setVisible(true);
+					if(vehiculo!=null){
+						txtID.setText(vehiculo.getId_vehi().toString());
+						txtMarca.setText(vehiculo.getMarca());
+						txtModelo.setText(vehiculo.getModelo());
+	    			}
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
-		     }
-		  });
+		    }
+		});
 
 		txtPropietario.setColumns(10);
 		
