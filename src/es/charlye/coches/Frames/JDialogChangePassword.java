@@ -38,7 +38,7 @@ public class JDialogChangePassword extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public JDialogChangePassword(UsuarioDAO usuario,String nombre) {
+	public JDialogChangePassword(UsuarioDAO usuario,Usuario user) {
 		setTitle("Cambiar Contraseña");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JDialogChangePassword.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
 		setBounds(100, 100, 336, 190);
@@ -65,12 +65,12 @@ public class JDialogChangePassword extends JDialog {
 					char[]pass=oldPassword.getPassword();
 					String password=new String(pass);
 					password=EncryptMD5.encryptMD5(password);
-					if(usuario.correcto(nombre, password)){
+					if(usuario.correcto(user.getUser(), password)){
 						password=new String(newPassword.getPassword());
 						String rp=new String(repeatPassword.getPassword());
 						if(password.equals(rp)){
 							password=EncryptMD5.encryptMD5(password);
-							usuario.modificar(new Usuario(nombre, password.toLowerCase()));
+							usuario.modificar(new Usuario(user.getUser(), password.toLowerCase(),user.getPrivileges()));
 							JOptionPane.showMessageDialog(newPassword ,"Contraseña cambiada.");
 							dispose();
 						}else

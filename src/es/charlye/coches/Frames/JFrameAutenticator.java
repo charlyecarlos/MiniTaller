@@ -95,7 +95,7 @@ public class JFrameAutenticator extends JFrame {
 					password=EncryptMD5.encryptMD5(password);
 					if(usuario.correcto(userField.getText().toLowerCase(), password)){
 						JOptionPane.showMessageDialog(btnEntrar ,"Correcto.");
-						JFrameMain frame = new JFrameMain(manager,userField.getText().toLowerCase());
+						JFrameMain frame = new JFrameMain(manager,usuario.obtener(userField.getText().toLowerCase()));
 						frame.setVisible(true);
 						dispose();
 					}else

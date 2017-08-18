@@ -2,6 +2,7 @@ package es.charlye.coches.Frames;
 
 import es.charlye.coches.DAO.DAOManager;
 import es.charlye.coches.Exception.DAOException;
+import es.charlye.coches.Modelo.Usuario;
 import es.charlye.coches.TableModel.AveriaTableModel;
 
 import java.awt.FlowLayout;
@@ -33,7 +34,7 @@ public class JDialogFechaAverias extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public JDialogFechaAverias(DAOManager manager,String fecha) {
+	public JDialogFechaAverias(DAOManager manager,String fecha,Usuario usuario) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JFrameAutenticator.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
 		setTitle("Reparaciones Mensuales");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -41,7 +42,7 @@ public class JDialogFechaAverias extends JDialog {
 		JScrollPane scrollPane = new JScrollPane();
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		model=new AveriaTableModel(manager.getAveriaDAO());	
+		model=new AveriaTableModel(manager.getAveriaDAO(),usuario);	
 		try {
 			model.updateMonth(fecha);
 		} catch (DAOException e1) {

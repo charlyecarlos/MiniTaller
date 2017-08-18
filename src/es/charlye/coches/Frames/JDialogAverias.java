@@ -21,6 +21,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import es.charlye.coches.DAO.DAOManager;
 import es.charlye.coches.Exception.DAOException;
+import es.charlye.coches.Modelo.Usuario;
 import es.charlye.coches.TableModel.AveriaTableModel;
 
 public class JDialogAverias extends JDialog {
@@ -33,7 +34,7 @@ public class JDialogAverias extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public JDialogAverias(DAOManager manager,Long id) {
+	public JDialogAverias(DAOManager manager,Long id,Usuario usuario) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JFrameAutenticator.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
 		setTitle("Reparaciones");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -41,7 +42,7 @@ public class JDialogAverias extends JDialog {
 		JScrollPane scrollPane = new JScrollPane();
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		model=new AveriaTableModel(manager.getAveriaDAO());	
+		model=new AveriaTableModel(manager.getAveriaDAO(),usuario);	
 		try {
 			model.updateVehi(id);
 		} catch (DAOException e1) {
@@ -78,23 +79,33 @@ public class JDialogAverias extends JDialog {
 		JLabel lblReparacionesSeleccionadas = new JLabel("Reparaciones: "+table.getRowCount()+"      ");
 		buttonPane.add(lblReparacionesSeleccionadas);
 
-		double sumarepuestos=0;
-		double sumacobrado=0;
-		double sumatotal=0;
-		for(int i=0;i<table.getRowCount();i++){
-			sumarepuestos+=new Double (table.getModel().getValueAt(i, 4).toString());
-			sumacobrado+=new Double (table.getModel().getValueAt(i, 5).toString());
-			sumatotal+=new Double (table.getModel().getValueAt(i, 6).toString());
+		if(usuario.getPrivileges()>1){
+			double sumarepuestos=0;
+			double sumacobrado=0;
+			double sumatotal=0;
+			for(int i=0;i<table.getRowCount();i++){
+				sumarepuestos+=new Double (table.getModel().getValueAt(i, 4).toString());
+				sumacobrado+=new Double (table.getModel().getValueAt(i, 5).toString());
+				sumatotal+=new Double (table.getModel().getValueAt(i, 6).toString());
+			}
+
+			JLabel lblTotalRepuesto = new JLabel("Total Repuesto:"+sumarepuestos+"€     ");
+			buttonPane.add(lblTotalRepuesto);			
+			
+			JLabel lblTotalCobrado = new JLabel("Total Cobrado:"+sumacobrado+"€     ");
+			buttonPane.add(lblTotalCobrado);
+			
+			JLabel lblBeneficioTotal = new JLabel("Beneficio total:"+sumatotal+"€    ");
+			buttonPane.add(lblBeneficioTotal);			
+		}else{
+			double sumacobrado=0;
+			for(int i=0;i<table.getRowCount();i++){
+				sumacobrado+=new Double (table.getModel().getValueAt(i, 4).toString());
+			}
+			
+			JLabel lblTotalCobrado = new JLabel("Total Cobrado:"+sumacobrado+"€     ");
+			buttonPane.add(lblTotalCobrado);
 		}
-		
-		JLabel lblTotalRepuesto = new JLabel("Total Repuesto:"+sumarepuestos+"€     ");
-		buttonPane.add(lblTotalRepuesto);
-		
-		JLabel lblTotalCobrado = new JLabel("Total Cobrado:"+sumacobrado+"€     ");
-		buttonPane.add(lblTotalCobrado);
-		
-		JLabel lblBeneficioTotal = new JLabel("Beneficio total:"+sumatotal+"€    ");
-		buttonPane.add(lblBeneficioTotal);
 		
 		 int condition = JComponent.WHEN_FOCUSED;
 		  InputMap iMap = table.getInputMap(condition);

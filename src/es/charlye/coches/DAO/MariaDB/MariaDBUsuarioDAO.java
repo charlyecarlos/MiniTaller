@@ -18,10 +18,10 @@ import es.charlye.coches.Modelo.Usuario;
  */
 public class MariaDBUsuarioDAO implements UsuarioDAO{
 
-	final String INSERT="INSERT INTO USUARIO (USUARIO,CONTRASENHA) VALUES(?,?)";
+	final String INSERT="INSERT INTO USUARIO (USUARIO,CONTRASENHA,PRIVILEGIO) VALUES(?,?,?)";
 	final String UPDATE="UPDATE USUARIO SET USUARIO=?,CONTRASENHA=? WHERE USUARIO=?";
 	final String DELETE="DELETE FROM USUARIO WHERE USUARIO=?";
-	final String GETALL="SELECT USUARIO,CONTRASENHA FROM USUARIO";
+	final String GETALL="SELECT USUARIO,CONTRASENHA,PRIVILEGIO FROM USUARIO";
 	final String GETONE=GETALL+" WHERE USUARIO=?";
 	final String VALIDATE="SELECT COUNT(USUARIO) FROM USUARIO WHERE USUARIO=? AND CONTRASENHA=?";
 	final String EXITS="SELECT COUNT(USUARIO) FROM USUARIO WHERE USUARIO=?";
@@ -39,6 +39,7 @@ public class MariaDBUsuarioDAO implements UsuarioDAO{
 			stat = conn.prepareStatement(INSERT);
 			stat.setString(1, a.getUser());
 			stat.setString(2, a.getPassword());
+			stat.setInt(3, a.getPrivileges());
 			if(stat.executeUpdate()==0)
 				throw new DAOException("Puede que no se haya guardado.");
 		} catch (SQLException e) {
@@ -104,7 +105,7 @@ public class MariaDBUsuarioDAO implements UsuarioDAO{
 			stat = conn.prepareStatement(GETALL);
 			ResultSet set=stat.executeQuery();
 			while(set.next())
-				a.add(new Usuario(set.getString(1), set.getString(2)));
+				a.add(new Usuario(set.getString(1), set.getString(2),set.getInt(3)));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{
@@ -127,7 +128,7 @@ public class MariaDBUsuarioDAO implements UsuarioDAO{
 			stat.setString(1, nombre);
 			ResultSet set=stat.executeQuery();
 			set.next();
-			usuario=new Usuario(set.getString(1), set.getString(2));
+			usuario=new Usuario(set.getString(1), set.getString(2),set.getInt(3));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{

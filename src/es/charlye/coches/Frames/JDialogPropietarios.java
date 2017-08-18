@@ -4,6 +4,7 @@ package es.charlye.coches.Frames;
 
 import es.charlye.coches.DAO.DAOManager;
 import es.charlye.coches.Exception.DAOException;
+import es.charlye.coches.Modelo.Usuario;
 import es.charlye.coches.TableModel.PropietariosTableModel;
 
 import javax.swing.JButton;
@@ -38,7 +39,7 @@ public class JDialogPropietarios extends JDialog {
 	 * Create the dialog.
 	 * @throws DAOException 
 	 */
-	public JDialogPropietarios(DAOManager manager,String nombre,int btn) throws DAOException {
+	public JDialogPropietarios(DAOManager manager,String nombre,int btn,Usuario usuario) throws DAOException {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JFrameAutenticator.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
 		setTitle("Clientes");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -73,6 +74,13 @@ public class JDialogPropietarios extends JDialog {
 			});
 			buttonPane.add(btnCrearNuevoCliente);
 			{
+				
+				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						dispose();
+					}
+				});
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -80,7 +88,7 @@ public class JDialogPropietarios extends JDialog {
 							int row=table.getSelectedRow();
 							if(row!=-1){
 								Long id=new Long(table.getModel().getValueAt(row, 0).toString());
-								JDialogVehiculos dialog = new JDialogVehiculos(manager,id,btn);
+								JDialogVehiculos dialog = new JDialogVehiculos(manager,id,btn,usuario);
 								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 								dialog.setVisible(true);
 								dispose();
@@ -93,18 +101,11 @@ public class JDialogPropietarios extends JDialog {
 					}
 				});
 				
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						dispose();
-					}
-				});
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-				
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
+				cancelButton.setActionCommand("Cancel");
+				buttonPane.add(cancelButton);
 				
 				int condition = JComponent.WHEN_FOCUSED;
 				  InputMap iMap = table.getInputMap(condition);

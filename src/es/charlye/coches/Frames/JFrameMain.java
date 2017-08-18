@@ -2,9 +2,11 @@ package es.charlye.coches.Frames;
 
 
 import es.charlye.coches.DAO.DAOManager;
+import es.charlye.coches.DAO.UsuarioDAO;
 import es.charlye.coches.DAO.MariaDB.MariaDBDAOManager;
 import es.charlye.coches.Exception.DAOException;
 import es.charlye.coches.Modelo.Averia;
+import es.charlye.coches.Modelo.Usuario;
 import es.charlye.coches.Modelo.Vehiculo;
 import es.charlye.coches.TableModel.AlarmTableModel;
 
@@ -78,7 +80,8 @@ public class JFrameMain extends JFrame {
 			public void run() {
 				try {
 					DAOManager manager=new MariaDBDAOManager("localhost", "coches", "coches", "Coches");
-					JFrameMain main=new JFrameMain(manager,"root");
+					UsuarioDAO usuario=manager.getUsuarioDAO();
+					JFrameMain main=new JFrameMain(manager,usuario.obtener("root"));
 					main.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -90,9 +93,9 @@ public class JFrameMain extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public JFrameMain(DAOManager manager,String usuario) {
+	public JFrameMain(DAOManager manager,Usuario usuario) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JFrameAutenticator.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
-		setTitle("Principal - "+usuario);
+		setTitle("Principal - "+usuario.getUser());
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 785, 498);
@@ -144,10 +147,10 @@ public class JFrameMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if(JOptionPane.showConfirmDialog(mntmSalir, "¿Seguro que quieres eliminar la cuenta?","Eliminar cuenta",JOptionPane.YES_NO_OPTION)==0)
 					try {
-						JDialogDeleteUser dialog = new JDialogDeleteUser(manager,usuario);
+						JDialogDeleteUser dialog = new JDialogDeleteUser(manager,usuario.getUser());
 						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						dialog.setVisible(true);
-						if(manager.getUsuarioDAO().existe(usuario))
+						if(manager.getUsuarioDAO().existe(usuario.getUser()))
 							dispose();
 					} catch (DAOException e1) {
 						e1.printStackTrace();
@@ -170,10 +173,10 @@ public class JFrameMain extends JFrame {
 			}
 		});	
 		
-		if(usuario.equals("root"))
+		if(usuario.getPrivileges()==3)
 			mntmEliminarCuenta.setEnabled(false);
 		
-		if(usuario.equals("root")){
+		if(usuario.getPrivileges()==3){
 			JMenu mnAdministrador = new JMenu("Administrador");
 			menuBar.add(mnAdministrador);
 			
@@ -235,7 +238,7 @@ public class JFrameMain extends JFrame {
 		
 		txtUser = new JTextField();
 		txtUser.setEnabled(false);
-		txtUser.setText(usuario);
+		txtUser.setText(usuario.getUser());
 		txtUser.setColumns(10);
 		
 		JPanel Mensual = new JPanel();
@@ -246,7 +249,7 @@ public class JFrameMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JDialogPropietarios dialog;
 				try {
-					dialog = new JDialogPropietarios(manager,"",1);	// 1 significa que al dar OK en vehiculos sale sus reparaciones.
+					dialog = new JDialogPropietarios(manager,"",1,usuario);	// 1 significa que al dar OK en vehiculos sale sus reparaciones.
 					dialog.setVisible(true);
 				} catch (DAOException e1) {
 					e1.printStackTrace();
@@ -301,7 +304,7 @@ public class JFrameMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String fecha=yearChooser.getValue()+"-"+(monthChooser.getMonth()+1);
 				try {
-					JDialogFechaAverias dialog = new JDialogFechaAverias(manager,fecha);
+					JDialogFechaAverias dialog = new JDialogFechaAverias(manager,fecha, usuario);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception arg0) {
@@ -378,7 +381,7 @@ public class JFrameMain extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					JDialogPropietarios dialog = new JDialogPropietarios(manager,txtPropietario.getText(),0);	// 1 significa que al dar OK en vehículos rellena los datos del main.
+					JDialogPropietarios dialog = new JDialogPropietarios(manager,txtPropietario.getText(),0,usuario);	// 1 significa que al dar OK en vehículos rellena los datos del main.
 					dialog.setVisible(true);
 					if(vehiculo!=null){
 						txtID.setText(vehiculo.getId_vehi().toString());

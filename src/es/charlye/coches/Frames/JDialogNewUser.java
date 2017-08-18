@@ -27,6 +27,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
 
 public class JDialogNewUser extends JDialog {
 
@@ -39,6 +40,7 @@ public class JDialogNewUser extends JDialog {
 	private JPasswordField pwdPassword;
 	private JPasswordField pwdConfirm;
 	private JButton btnCrearNuevoUsuario;
+	private int priv=1;
 
 	/**
 	 * Create the dialog.
@@ -65,6 +67,11 @@ public class JDialogNewUser extends JDialog {
 		pwdConfirm = new JPasswordField();
 		pwdConfirm.setText("");
 		
+		JComboBox<String> cbPrivilegios = new JComboBox<String>();
+		cbPrivilegios.addItem("Limitado");
+		cbPrivilegios.addItem("Normal");
+		cbPrivilegios.addItem("Administrador");
+		
 		btnCrearNuevoUsuario = new JButton("Crear nuevo usuario");
 		btnCrearNuevoUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -72,8 +79,12 @@ public class JDialogNewUser extends JDialog {
 				String confirm=new String(pwdConfirm.getPassword());
 				if(password.equals(confirm)){
 					try {
+						if(cbPrivilegios.getSelectedItem().equals("Normal"))
+							priv=2;
+						else if(cbPrivilegios.getSelectedItem().equals("Administrador"))
+							priv=3;
 						password=EncryptMD5.encryptMD5(password);
-						manager.getUsuarioDAO().insertar(new Usuario(lblUser.getText(), password));
+						manager.getUsuarioDAO().insertar(new Usuario(lblUser.getText(), password,priv));
 						JOptionPane.showMessageDialog(btnCrearNuevoUsuario ,"El usuario '"+lblUser.getText()+"' ha sido creado correctamente.");
 						dispose();
 					} catch (DAOException e1) {
@@ -99,43 +110,59 @@ public class JDialogNewUser extends JDialog {
 		     }
 		  });
 		
+		JLabel lblPrivilegio = new JLabel("Pemisos:");
+		
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
-			gl_contentPanel.createParallelGroup(Alignment.LEADING)
+			gl_contentPanel.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
+					.addContainerGap()
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNombreUsuario)
-						.addComponent(lblContrasenha, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblConfirm))
-					.addGap(10)
-					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(pwdConfirm, GroupLayout.PREFERRED_SIZE, 179, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING, false)
-							.addComponent(lblUser)
-							.addComponent(pwdPassword, GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)))
-					.addContainerGap(15, Short.MAX_VALUE))
-				.addGroup(Alignment.TRAILING, gl_contentPanel.createSequentialGroup()
-					.addContainerGap(78, Short.MAX_VALUE)
-					.addComponent(btnCrearNuevoUsuario, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE)
-					.addGap(71))
+						.addGroup(gl_contentPanel.createSequentialGroup()
+							.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_contentPanel.createSequentialGroup()
+									.addComponent(lblNombreUsuario)
+									.addPreferredGap(ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+									.addComponent(lblUser, 180, 180, 180))
+								.addGroup(gl_contentPanel.createSequentialGroup()
+									.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblContrasenha, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
+										.addComponent(lblConfirm))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+										.addComponent(pwdConfirm, GroupLayout.PREFERRED_SIZE, 179, GroupLayout.PREFERRED_SIZE)
+										.addComponent(pwdPassword, GroupLayout.PREFERRED_SIZE, 179, GroupLayout.PREFERRED_SIZE))))
+							.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+						.addGroup(Alignment.TRAILING, gl_contentPanel.createSequentialGroup()
+							.addComponent(btnCrearNuevoUsuario, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE)
+							.addGap(75))
+						.addGroup(gl_contentPanel.createSequentialGroup()
+							.addComponent(lblPrivilegio)
+							.addPreferredGap(ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+							.addComponent(cbPrivilegios, GroupLayout.PREFERRED_SIZE, 178, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())))
 		);
 		gl_contentPanel.setVerticalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
-					.addGap(23)
+					.addContainerGap()
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNombreUsuario)
 						.addComponent(lblUser, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblContrasenha)
 						.addComponent(pwdPassword, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
-					.addGap(20)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblConfirm)
 						.addComponent(pwdConfirm, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(btnCrearNuevoUsuario, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+					.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblPrivilegio)
+						.addComponent(cbPrivilegios, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(12)
+					.addComponent(btnCrearNuevoUsuario, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		contentPanel.setLayout(gl_contentPanel);

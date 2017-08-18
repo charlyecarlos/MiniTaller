@@ -4,6 +4,13 @@ public class Usuario {
 
 	private String user;
 	private String password;
+	private int privileges;
+	
+	public Usuario(String user, String password,int privileges) {
+		this.user = user;
+		this.password = password;
+		this.privileges = privileges;
+	}
 	
 	public Usuario(String user, String password) {
 		this.user = user;
@@ -62,5 +69,12 @@ public class Usuario {
 		this.password = password;
 	}
 
+	public int getPrivileges() {
+		return privileges;
+	}
+
+	public void setPrivileges(int privileges) {
+		this.privileges = privileges;
+	}
 
 }

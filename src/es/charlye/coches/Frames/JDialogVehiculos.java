@@ -3,6 +3,7 @@ package es.charlye.coches.Frames;
 
 import es.charlye.coches.DAO.DAOManager;
 import es.charlye.coches.Exception.DAOException;
+import es.charlye.coches.Modelo.Usuario;
 import es.charlye.coches.TableModel.VehiculosTableModel;
 
 import javax.swing.JButton;
@@ -37,7 +38,7 @@ public class JDialogVehiculos extends JDialog {
 	 * Create the dialog.
 	 * @throws DAOException 
 	 */
-	public JDialogVehiculos(DAOManager manager,Long id,int btn) throws DAOException {
+	public JDialogVehiculos(DAOManager manager,Long id,int btn,Usuario usuario) throws DAOException {
 		setTitle("Vehiculos");
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JDialogVehiculos.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
@@ -89,7 +90,7 @@ public class JDialogVehiculos extends JDialog {
 									e.printStackTrace();
 								}
 							else{
-								JDialogAverias dialog = new JDialogAverias(manager,new Long(table.getModel().getValueAt(row, 0).toString()));
+								JDialogAverias dialog = new JDialogAverias(manager,new Long(table.getModel().getValueAt(row, 0).toString()),usuario);
 								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 								dialog.setVisible(true);
 							}
