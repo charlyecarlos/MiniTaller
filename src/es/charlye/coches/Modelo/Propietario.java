@@ -6,31 +6,36 @@ public class Propietario {
 	private String nombre;
 	private String direccion;
 	private String telefono;
+	private String email;
 	
-	public Propietario(Long id_prop, String nombre, String direccion, String telefono) {
+	public Propietario(Long id_prop, String nombre, String direccion, String telefono,String email) {
 		this.id_prop = id_prop;
 		this.nombre = nombre;
 		this.direccion = direccion;
 		this.telefono = telefono;
+		this.email = email;
 	}
 	
-	public Propietario(String nombre, String direccion, String telefono) {
+	public Propietario(String nombre, String direccion, String telefono,String email) {
 		this.nombre = nombre;
 		this.direccion = direccion;
 		this.telefono = telefono;
+		this.email = email;
 	}
 
 	@Override
 	public String toString() {
 		return "Propietario [id_prop=" + id_prop + ", nombre=" + nombre + ", direccion=" + direccion + ", telefono="
-				+ telefono + "]";
+				+ telefono + ", email=" + email + "]";
 	}
+	
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((direccion == null) ? 0 : direccion.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((id_prop == null) ? 0 : id_prop.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + ((telefono == null) ? 0 : telefono.hashCode());
@@ -50,6 +55,11 @@ public class Propietario {
 			if (other.direccion != null)
 				return false;
 		} else if (!direccion.equals(other.direccion))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
 			return false;
 		if (id_prop == null) {
 			if (other.id_prop != null)
@@ -101,4 +111,11 @@ public class Propietario {
 		this.telefono = telefono;
 	}
 	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }

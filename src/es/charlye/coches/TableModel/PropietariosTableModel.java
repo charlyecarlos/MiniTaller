@@ -21,7 +21,7 @@ public class PropietariosTableModel extends AbstractTableModel{
 
 	@Override
 	public int getColumnCount() {
-		return 4;
+		return 5;
 	}
 
 	@Override
@@ -37,6 +37,7 @@ public class PropietariosTableModel extends AbstractTableModel{
 		case 1:return preguntado.getNombre();
 		case 2:return preguntado.getDireccion();
 		case 3:return preguntado.getTelefono();
+		case 4:return preguntado.getEmail();
 		default: return "";
 		}
 	}
@@ -47,6 +48,7 @@ public class PropietariosTableModel extends AbstractTableModel{
 		case 1:return "Nombre";
 		case 2:return "Direccion";
 		case 3:return "Telefono";
+		case 4:return "Email";
 		default:return "[Desconocido]";
 		}
 	}

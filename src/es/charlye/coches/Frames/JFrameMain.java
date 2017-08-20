@@ -173,7 +173,7 @@ public class JFrameMain extends JFrame {
 			}
 		});	
 		
-		if(usuario.getPrivileges()==3)
+		if(usuario.getUser().equals("root"))
 			mntmEliminarCuenta.setEnabled(false);
 		
 		if(usuario.getPrivileges()==3){
@@ -256,6 +256,23 @@ public class JFrameMain extends JFrame {
 				}
 			}
 		});
+		
+		JButton btnCrearCliente = new JButton("Crear Cliente");
+		btnCrearCliente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JDialogNewOwner dialog = new JDialogNewOwner(manager.getPropietarioDAO());
+				dialog.setModal(true);
+				dialog.setVisible(true);
+			}
+		});
+		
+		JButton btnCrearVehiculo = new JButton("Crear Vehículo");
+		btnCrearVehiculo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JDialogNewVehicle dialog = new JDialogNewVehicle(manager,usuario);
+				dialog.setVisible(true);
+			}
+		});
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -269,10 +286,13 @@ public class JFrameMain extends JFrame {
 									.addComponent(lblUsuario)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(txtUser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 259, GroupLayout.PREFERRED_SIZE)
 								.addGroup(gl_contentPane.createSequentialGroup()
 									.addGap(17)
-									.addComponent(btnReparacionesPorVehculo, GroupLayout.PREFERRED_SIZE, 221, GroupLayout.PREFERRED_SIZE))
-								.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 259, GroupLayout.PREFERRED_SIZE))
+									.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+										.addComponent(btnCrearCliente, GroupLayout.PREFERRED_SIZE, 221, GroupLayout.PREFERRED_SIZE)
+										.addComponent(btnReparacionesPorVehculo, GroupLayout.PREFERRED_SIZE, 221, GroupLayout.PREFERRED_SIZE)
+										.addComponent(btnCrearVehiculo, GroupLayout.PREFERRED_SIZE, 221, GroupLayout.PREFERRED_SIZE))))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(insertarAveria, GroupLayout.PREFERRED_SIZE, 498, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
@@ -289,7 +309,11 @@ public class JFrameMain extends JFrame {
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(Mensual, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnReparacionesPorVehculo))
+							.addComponent(btnReparacionesPorVehculo)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(btnCrearCliente)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(btnCrearVehiculo))
 						.addComponent(insertarAveria, GroupLayout.PREFERRED_SIZE, 255, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
@@ -424,7 +448,6 @@ public class JFrameMain extends JFrame {
 		enFormat.setAllowsInvalid(true);
 		// Asignamos la factoría al campo
 		txtRecambios.setFormatterFactory(currFactory);
-		
 		
 		
 		JLabel lblPrecioCobrado = new JLabel("Precio Cobrado:");

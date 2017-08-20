@@ -15,11 +15,11 @@ public class MariaDBPropietarioDAO implements PropietarioDAO{
 	
 	Connection conn=null;
 	
-	final String INSERT="INSERT INTO PROPIETARIO(NOMBRE,DIRECCION,TELEFONO) VALUES (?,?,?)";
-	final String UPDATE="UPDATE PROPIETARIO SET ID_PROP=?,NOMBRE=?,DIRECCION=?,TELEFONO=?";
+	final String INSERT="INSERT INTO PROPIETARIO(NOMBRE,DIRECCION,TELEFONO,EMAIL) VALUES (?,?,?,?)";
+	final String UPDATE="UPDATE PROPIETARIO SET ID_PROP=?,NOMBRE=?,DIRECCION=?,TELEFONO=?,EMAIL=?";
 	final String DELETE="DELETE FROM PROPIETARIO WHERE ID_PROP=?";
-	final String GETALL="SELECT ID_PROP,NOMBRE,DIRECCION,TELEFONO FROM PROPIETARIO";
-	final String GETONE= GETALL+" WHERE ID_PROPIETARIO = ?";
+	final String GETALL="SELECT ID_PROP,NOMBRE,DIRECCION,TELEFONO,EMAIL FROM PROPIETARIO";
+	final String GETONE= GETALL+" WHERE ID_PROP=?";
 	final String GETSOME= GETALL+" WHERE NOMBRE LIKE ?";
 	
 	
@@ -32,10 +32,10 @@ public class MariaDBPropietarioDAO implements PropietarioDAO{
 		PreparedStatement stat=null;
 		try {
 			stat = conn.prepareStatement(INSERT);
-//			stat.setLong(1, a.getId_prop());
 			stat.setString(1, a.getNombre());
 			stat.setString(2, a.getDireccion());
 			stat.setString(3, a.getTelefono());
+			stat.setString(4, a.getEmail());
 			if(stat.executeUpdate()==0)
 				throw new DAOException("Puede que no se haya guardado.");
 		} catch (SQLException e) {
@@ -59,7 +59,8 @@ public class MariaDBPropietarioDAO implements PropietarioDAO{
 			stat.setLong(1, a.getId_prop());
 			stat.setString(2, a.getNombre());
 			stat.setString(3, a.getDireccion());
-			stat.setString(6, a.getTelefono());
+			stat.setString(4, a.getTelefono());
+			stat.setString(5, a.getEmail());
 			if(stat.executeUpdate()==0)
 				throw new DAOException("Puede que no se haya guardado.");
 		} catch (SQLException e) {
@@ -102,7 +103,7 @@ public class MariaDBPropietarioDAO implements PropietarioDAO{
 			stat = conn.prepareStatement(GETALL);
 			ResultSet set=stat.executeQuery();
 			while(set.next())
-				propietario.add(new Propietario(set.getLong(1),set.getString(2),set.getString(3),set.getString(4)));
+				propietario.add(new Propietario(set.getLong(1),set.getString(2),set.getString(3),set.getString(4),set.getString(5)));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{
@@ -121,10 +122,11 @@ public class MariaDBPropietarioDAO implements PropietarioDAO{
 		PreparedStatement stat=null;
 		Propietario propietario=null;
 		try {
-			stat = conn.prepareStatement(GETALL);
+			stat = conn.prepareStatement(GETONE);
+			stat.setLong(1, id);
 			ResultSet set=stat.executeQuery();
 			set.next();
-			propietario= new Propietario(set.getLong(1),set.getString(2),set.getString(3),set.getString(4));
+			propietario= new Propietario(set.getLong(1),set.getString(2),set.getString(3),set.getString(4),set.getString(5));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{
@@ -147,7 +149,7 @@ public class MariaDBPropietarioDAO implements PropietarioDAO{
 			stat.setString(1,"%"+nombre+"%");
 			ResultSet set=stat.executeQuery();
 			while(set.next())
-				propietario.add(new Propietario(set.getLong(1),set.getString(2),set.getString(3),set.getString(4)));
+				propietario.add(new Propietario(set.getLong(1),set.getString(2),set.getString(3),set.getString(4),set.getString(5)));
 		} catch (SQLException e) {
 			throw new DAOException("Error en SQL", e);
 		}finally{

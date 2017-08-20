@@ -61,7 +61,6 @@ public class JDialogPropietarios extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						JDialogNewOwner dialog = new JDialogNewOwner(manager.getPropietarioDAO());
-						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						dialog.setModal(true);
 						model=new PropietariosTableModel(manager.getPropietarioDAO());
 						model.updateModel(nombre);
@@ -88,9 +87,13 @@ public class JDialogPropietarios extends JDialog {
 							int row=table.getSelectedRow();
 							if(row!=-1){
 								Long id=new Long(table.getModel().getValueAt(row, 0).toString());
-								JDialogVehiculos dialog = new JDialogVehiculos(manager,id,btn,usuario);
-								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-								dialog.setVisible(true);
+								if(btn==3)
+									JDialogNewVehicle.setPropietario(manager.getPropietarioDAO().obtener(id));
+								else{
+									JDialogVehiculos dialog = new JDialogVehiculos(manager,id,btn,usuario);
+									dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+									dialog.setVisible(true);
+								}
 								dispose();
 							}else
 								JOptionPane.showMessageDialog(okButton ,"No se ha seleccionado ningun cliente.");								

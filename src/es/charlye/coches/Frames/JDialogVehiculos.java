@@ -99,6 +99,15 @@ public class JDialogVehiculos extends JDialog {
 							JOptionPane.showMessageDialog(okButton ,"No se ha seleccionado ningun cliente.");
 					}
 				});
+				
+				JButton btnNuevoVehiculo = new JButton("Nuevo Vehículo");
+				btnNuevoVehiculo.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						JDialogNewVehicle dialog = new JDialogNewVehicle(manager,usuario);
+						dialog.setVisible(true);
+					}
+				});
+				buttonPane.add(btnNuevoVehiculo);
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
