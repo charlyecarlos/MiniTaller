@@ -4,11 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import es.charlye.coches.DAO.DAOManager;
-import es.charlye.coches.DAO.PropietarioDAO;
-import es.charlye.coches.DAO.VehiculoDAO;
-import es.charlye.coches.DAO.AveriaDAO;
-import es.charlye.coches.DAO.UsuarioDAO;
+import es.charlye.coches.DAO.*;
 
 /**
  * @author charlye
@@ -21,6 +17,8 @@ public class MariaDBDAOManager implements DAOManager{
 	private VehiculoDAO vehi=null;
 	private AveriaDAO averia=null;
 	private UsuarioDAO usuario=null;
+	private Tipo_AlarmaDAO tipo_alarma=null;
+	private AlarmaDAO alarma=null;
 	
 	public MariaDBDAOManager(String host,String username,String password,String database) throws SQLException{
 		conn= DriverManager.getConnection("jdbc:mysql://"+host+"/"+database, username, password); 
@@ -53,12 +51,18 @@ public class MariaDBDAOManager implements DAOManager{
 			usuario=new MariaDBUsuarioDAO(conn);
 		return usuario;
 	}
-	
-//	public static void main(String[] args) throws SQLException, DAOException {
-//		MariaDBDAOManager man= new MariaDBDAOManager("localhost", "coches", "coches", "Coches");
-//		List<Propietario> prop=man.getPropietarioDAO().obtenerTodos();
-//		for(Propietario p:prop)
-//			System.out.println(p);
-//	}
-	
+
+	@Override
+	public Tipo_AlarmaDAO getTipo_AlarmaDAO() {
+		if(tipo_alarma==null)
+			tipo_alarma=new MariaDBTipo_AlarmaDAO(conn);
+		return tipo_alarma;
+	}
+
+	@Override
+	public AlarmaDAO getAlarmaDAO() {
+		if(alarma==null)
+			alarma=new MariaDBAlarmaDAO(conn);
+		return alarma;
+	}
 }

@@ -40,7 +40,9 @@ public class JDialogChangePassword extends JDialog {
 	 */
 	public JDialogChangePassword(UsuarioDAO usuario,Usuario user) {
 		setTitle("Cambiar Contraseña");
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JDialogChangePassword.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
+
 		setBounds(100, 100, 336, 190);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

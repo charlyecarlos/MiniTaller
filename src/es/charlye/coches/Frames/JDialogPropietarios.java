@@ -4,6 +4,7 @@ package es.charlye.coches.Frames;
 
 import es.charlye.coches.DAO.DAOManager;
 import es.charlye.coches.Exception.DAOException;
+import es.charlye.coches.Modelo.Propietario;
 import es.charlye.coches.Modelo.Usuario;
 import es.charlye.coches.TableModel.PropietariosTableModel;
 
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.GroupLayout;
@@ -22,18 +24,25 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
 
 public class JDialogPropietarios extends JDialog {
 
 	private static final long serialVersionUID = 7147423908291492419L;
+	private static Propietario propietario=null;
 	private JPanel buttonPane;
 	private JTable table;
 	private PropietariosTableModel model;
+	private JTextField txtNombre;
 
 	/**
 	 * Create the dialog.
@@ -71,6 +80,43 @@ public class JDialogPropietarios extends JDialog {
 					}
 				}
 			});
+			
+			txtNombre = new JTextField();
+			txtNombre.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent arg0) {
+					SwingUtilities.invokeLater(new Runnable() {
+			            @Override
+			            public void run() {
+			            	try {
+								txtNombre.setForeground(Color.black);
+								model.updateModel(txtNombre.getText());
+								table.setModel(model);
+								scrollPane.setViewportView(table);
+							} catch (DAOException e) {
+								e.printStackTrace();
+							}
+						}
+			        });
+				};
+			});
+			txtNombre.addFocusListener(new FocusAdapter() {
+				@Override
+				public void focusGained(FocusEvent arg0) {
+					txtNombre.selectAll();
+				}
+				@Override
+				public void focusLost(FocusEvent e) {
+					if(txtNombre.getText().equals("")){
+						txtNombre.setForeground(Color.GRAY);
+						buttonPane.add(txtNombre);
+					}
+				}
+			});
+			txtNombre.setText("Nombre");
+			txtNombre.setForeground(Color.GRAY);
+			buttonPane.add(txtNombre);
+			txtNombre.setColumns(10);
 			buttonPane.add(btnCrearNuevoCliente);
 			{
 				
@@ -87,8 +133,9 @@ public class JDialogPropietarios extends JDialog {
 							int row=table.getSelectedRow();
 							if(row!=-1){
 								Long id=new Long(table.getModel().getValueAt(row, 0).toString());
+								propietario = manager.getPropietarioDAO().obtener(id);
 								if(btn==3)
-									JDialogNewVehicle.setPropietario(manager.getPropietarioDAO().obtener(id));
+									JDialogNewVehicle.setPropietario(propietario);
 								else{
 									JDialogVehiculos dialog = new JDialogVehiculos(manager,id,btn,usuario);
 									dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -162,5 +209,13 @@ public class JDialogPropietarios extends JDialog {
 		getContentPane().setLayout(groupLayout);
 	    setLocationRelativeTo(null);
 	    setModal(true);
+	}
+
+	public static Propietario getPropietario() {
+		return propietario;
+	}
+
+	public static void setPropietario(Propietario propietario) {
+		JDialogPropietarios.propietario = propietario;
 	}
 }

@@ -13,4 +13,8 @@ public interface DAOManager {
 	AveriaDAO getAveriaDAO();
 	
 	UsuarioDAO getUsuarioDAO();
+	
+	Tipo_AlarmaDAO getTipo_AlarmaDAO();
+	
+	AlarmaDAO getAlarmaDAO();
 }

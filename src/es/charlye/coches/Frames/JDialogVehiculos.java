@@ -103,8 +103,15 @@ public class JDialogVehiculos extends JDialog {
 				JButton btnNuevoVehiculo = new JButton("Nuevo Vehículo");
 				btnNuevoVehiculo.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						JDialogNewVehicle dialog = new JDialogNewVehicle(manager,usuario);
-						dialog.setVisible(true);
+						try{
+							JDialogNewVehicle.setPropietario(manager.getPropietarioDAO().obtener(id));
+							JDialogNewVehicle dialog = new JDialogNewVehicle(manager,usuario);
+							dialog.setVisible(true);
+							model.updateModel(id);
+							table.setModel(model);
+						}catch(DAOException arg0){
+							arg0.printStackTrace();
+						}
 					}
 				});
 				buttonPane.add(btnNuevoVehiculo);

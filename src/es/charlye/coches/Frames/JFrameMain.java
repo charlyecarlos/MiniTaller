@@ -1,10 +1,10 @@
 package es.charlye.coches.Frames;
 
-
 import es.charlye.coches.DAO.DAOManager;
 import es.charlye.coches.DAO.UsuarioDAO;
 import es.charlye.coches.DAO.MariaDB.MariaDBDAOManager;
 import es.charlye.coches.Exception.DAOException;
+import es.charlye.coches.Modelo.Alarma;
 import es.charlye.coches.Modelo.Averia;
 import es.charlye.coches.Modelo.Usuario;
 import es.charlye.coches.Modelo.Vehiculo;
@@ -17,11 +17,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import java.text.NumberFormat;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.text.DefaultFormatterFactory;
@@ -40,14 +44,18 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ListSelectionModel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.JEditorPane;
 import javax.swing.JFormattedTextField;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -55,6 +63,8 @@ import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JTextFieldDateEditor;
 import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class JFrameMain extends JFrame {
 
@@ -164,7 +174,6 @@ public class JFrameMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					JDialogChangePassword dialog = new JDialogChangePassword(manager.getUsuarioDAO(),usuario);
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setModal(true);
 					dialog.setVisible(true);
 				} catch (Exception arg1) {
@@ -186,7 +195,6 @@ public class JFrameMain extends JFrame {
 					JDialogUsuarios dialog;
 					try {
 						dialog = new JDialogUsuarios(manager);
-						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						dialog.setModal(true);
 						dialog.setVisible(true);
 					} catch (DAOException e) {
@@ -230,6 +238,7 @@ public class JFrameMain extends JFrame {
 		setContentPane(contentPane);
 		
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setEnabled(false);
 		
 		JPanel insertarAveria = new JPanel();
 		insertarAveria.setBorder(new LineBorder(Color.GRAY));
@@ -263,6 +272,7 @@ public class JFrameMain extends JFrame {
 				JDialogNewOwner dialog = new JDialogNewOwner(manager.getPropietarioDAO());
 				dialog.setModal(true);
 				dialog.setVisible(true);
+				
 			}
 		});
 		
@@ -392,6 +402,7 @@ public class JFrameMain extends JFrame {
 		lblCoche.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		txtPropietario = new JTextField();
+		txtPropietario.setToolTipText("Escribe el nombre o parte de el y pulsa enter para buscarlo. ");
 		
 		int condition = JComponent.WHEN_FOCUSED;
 		InputMap iMap = txtPropietario.getInputMap(condition);
@@ -412,6 +423,8 @@ public class JFrameMain extends JFrame {
 						txtMarca.setText(vehiculo.getMarca());
 						txtModelo.setText(vehiculo.getModelo());
 	    			}
+					if(JDialogPropietarios.getPropietario()!=null)
+						txtPropietario.setText(JDialogPropietarios.getPropietario().getNombre());
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
@@ -456,6 +469,36 @@ public class JFrameMain extends JFrame {
 		txtCobrado.setColumns(10);
 		txtCobrado.setFormatterFactory(currFactory);
 		
+		JLabel lblKmActual = new JLabel("Km Actual:");
+		
+		txtKm = new JFormattedTextField();
+		txtKm.setHorizontalAlignment(SwingConstants.RIGHT);
+		txtKm.setColumns(10);
+		txtKm.setValue(new Integer(0));
+		txtKm.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				txtKm.selectAll();
+			}
+		});
+		
+		JCheckBox cbAlarma = new JCheckBox("Alarma");
+		cbAlarma.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(cbAlarma.isSelected()){
+					JDialogAlarm dialog = new JDialogAlarm(manager);
+					dialog.setVisible(true);
+					try{
+						cbAlarma.setText("Alarma "+JDialogAlarm.getTipo_alarma().getNombre());						
+					}catch(Exception e){}
+				}else{
+					JDialogAlarm.setTipo_alarma(null);
+					cbAlarma.setText("Alarma");
+				}
+			}
+		});
+		
 		JButton btnCrearReparacion = new JButton("Crear Reparación");
 		btnCrearReparacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -466,15 +509,44 @@ public class JFrameMain extends JFrame {
 									new Long(txtID.getText()),
 									String.format("%1$tY-%1$tm-%1$td",dateChooser.getDate()),
 									comenAveria.getText(),
-									new Double(txtRecambios.getText().substring(0, txtRecambios.getText().length()-2).replaceAll(",", ".")),
-									new Double (txtCobrado.getText().substring(0, txtCobrado.getText().length()-2).replaceAll(",", ".")),
-									Integer.parseInt(txtKm.getText()))	
+									Double.parseDouble(txtRecambios.getValue().toString()),
+									Double.parseDouble(txtCobrado.getValue().toString()),
+									(int) txtKm.getValue())
 								);
 						JOptionPane.showMessageDialog(btnCrearReparacion, "Reparacion insertada correctamente.", "Reparacion insertada",1);
+						model.updateModel();
+						table.setModel(model);
+						scrollPane.setViewportView(table);
+						if(cbAlarma.isSelected())
+							manager.getAlarmaDAO().insertar(
+									new Alarma(
+											new Long (txtID.getText()),
+											JDialogAlarm.getTipo_alarma().getNombre(),
+											String.format("%1$tY-%1$tm-%1$td",dateChooser.getDate()),
+											(int)txtKm.getValue()
+									)
+							);
 					}else
 						JOptionPane.showMessageDialog(btnCrearReparacion, "Algun campo esta vacío", "Campo Vacío",1);
 				} catch (DAOException e1) {
-					e1.printStackTrace();
+					try {
+						manager.getAlarmaDAO().eliminar(
+								new Alarma(
+										new Long (txtID.getText()),
+										JDialogAlarm.getTipo_alarma().getNombre(),
+										String.format("%1$tY-%1$tm-%1$td",dateChooser.getDate()),
+										(int)txtKm.getValue()
+								));
+						manager.getAlarmaDAO().insertar(
+								new Alarma(
+										new Long (txtID.getText()),
+										JDialogAlarm.getTipo_alarma().getNombre(),
+										String.format("%1$tY-%1$tm-%1$td",dateChooser.getDate()),
+										(int)txtKm.getValue()
+								));
+					} catch (NumberFormatException|DAOException e2) {
+						e2.printStackTrace();
+					}
 				}
 				txtPropietario.setText("");
 				dateChooser.setDate(c.getTime());
@@ -482,69 +554,67 @@ public class JFrameMain extends JFrame {
 				txtRecambios.setText("");
 				txtCobrado.setText("");
 				vehiculo=null;
-				 txtID.setText("");
-				 txtMarca.setText("");
-				 txtModelo.setText("");
+				txtID.setText("");
+				txtMarca.setText("");
+				txtModelo.setText("");
+				txtKm.setText("");
+				cbAlarma.setText("Alarma");
+				cbAlarma.setSelected(false);
 			}
 		});
-		
-		JLabel lblKmActual = new JLabel("Km Actual:");
-		
-		txtKm = new JFormattedTextField();
-		txtKm.setColumns(10);
 		
 		GroupLayout gl_insertarAveria = new GroupLayout(insertarAveria);
 		gl_insertarAveria.setHorizontalGroup(
 			gl_insertarAveria.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_insertarAveria.createSequentialGroup()
 					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING, false)
-							.addGroup(gl_insertarAveria.createSequentialGroup()
-								.addGap(143)
-								.addComponent(lblInsertarAveria, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE))
-							.addGroup(gl_insertarAveria.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
-									.addGroup(gl_insertarAveria.createSequentialGroup()
-										.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
-											.addGroup(gl_insertarAveria.createSequentialGroup()
-												.addComponent(lblNombrePropietario)
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(txtPropietario, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(lblPrecioCobrado))
-											.addGroup(gl_insertarAveria.createSequentialGroup()
-												.addComponent(lblId, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(txtID, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.UNRELATED)
-												.addComponent(dateChooser, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(lblPrecioRecambios)))
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING, false)
-											.addComponent(txtRecambios, GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-											.addComponent(txtCobrado, 0, 0, Short.MAX_VALUE)))
-									.addGroup(gl_insertarAveria.createSequentialGroup()
-										.addComponent(lblCoche, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(txtMarca, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(txtModelo, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(lblKmActual)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(txtKm, GroupLayout.PREFERRED_SIZE, 71, GroupLayout.PREFERRED_SIZE))))
-							.addGroup(gl_insertarAveria.createSequentialGroup()
-								.addGap(121)
-								.addComponent(btnCrearReparacion, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE))
-							.addGroup(gl_insertarAveria.createSequentialGroup()
-								.addContainerGap()
-								.addComponent(comenAveria)))
+						.addGroup(gl_insertarAveria.createSequentialGroup()
+							.addGap(143)
+							.addComponent(lblInsertarAveria, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_insertarAveria.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_insertarAveria.createSequentialGroup()
+									.addComponent(lblNombrePropietario)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(txtPropietario, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_insertarAveria.createSequentialGroup()
+									.addComponent(lblId, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(txtID, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(dateChooser, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblPrecioRecambios)
+								.addComponent(lblPrecioCobrado))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_insertarAveria.createParallelGroup(Alignment.LEADING)
+								.addComponent(txtRecambios, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+								.addComponent(txtCobrado, Alignment.TRAILING, 0, 0, Short.MAX_VALUE)
+								.addComponent(txtKm, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 71, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_insertarAveria.createSequentialGroup()
 							.addGap(140)
-							.addComponent(lblComentarioAveria, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(43, Short.MAX_VALUE))
+							.addComponent(lblComentarioAveria, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_insertarAveria.createSequentialGroup()
+							.addGap(69)
+							.addComponent(btnCrearReparacion, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(cbAlarma, GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
+						.addGroup(gl_insertarAveria.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lblCoche, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(txtMarca, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(txtModelo, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblKmActual)
+							.addGap(85))
+						.addGroup(gl_insertarAveria.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(comenAveria, GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)))
+					.addGap(35))
 		);
 		gl_insertarAveria.setVerticalGroup(
 			gl_insertarAveria.createParallelGroup(Alignment.LEADING)
@@ -581,19 +651,67 @@ public class JFrameMain extends JFrame {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(comenAveria, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnCrearReparacion)
+					.addGroup(gl_insertarAveria.createParallelGroup(Alignment.BASELINE)
+						.addComponent(cbAlarma)
+						.addComponent(btnCrearReparacion))
 					.addContainerGap(9, Short.MAX_VALUE))
 		);
 		insertarAveria.setLayout(gl_insertarAveria);
 		
 		table = new JTable();
-		table.setForeground(Color.WHITE);
+		table.setForeground(Color.DARK_GRAY);
 		table.setColumnSelectionAllowed(true);
 		table.setCellSelectionEnabled(true);
-		model= new AlarmTableModel(manager.getAveriaDAO());
+		model= new AlarmTableModel(manager.getAlarmaDAO());
+		
+		table.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				JPopupMenu popup;
+				if ( SwingUtilities.isRightMouseButton(e)) {
+					Point p = e.getPoint();
+					int rowNumber = table.rowAtPoint( p );
+					ListSelectionModel modelo = table.getSelectionModel();
+					modelo.setSelectionInterval( rowNumber, rowNumber );
+					
+					popup = new JPopupMenu();
+		        	JMenuItem borrar=new JMenuItem("Borrar");
+		        	borrar.addActionListener(new ActionListener() {
+		    			public void actionPerformed(ActionEvent arg0) {
+		    				if(JOptionPane.showConfirmDialog(mntmSalir, "Seguro que quieres borrar la '"+table.getModel().getValueAt(rowNumber, 5)+"' al vehículo '"+table.getModel().getValueAt(rowNumber, 3)+" "+table.getModel().getValueAt(rowNumber, 4)+"' del propietario '"+table.getModel().getValueAt(rowNumber, 0)+"'.","Borrar Alarma", JOptionPane.YES_NO_OPTION)==0){
+		    					ArrayList<String> a=new ArrayList<String>();
+		    					for(int i=0;i<7;i++)
+		    						a.add((String)table.getModel().getValueAt(rowNumber, i));
+		    					try {
+									manager.getAlarmaDAO().eliminar(manager.getAlarmaDAO().encontrarAlarma(a));
+									JOptionPane.showMessageDialog(btnCrearReparacion, "Alerta Borrada Correctamente.", "Alerta Borrada",1);	
+									model.updateModel();
+									table.setModel(model);
+									scrollPane.setViewportView(table);
+								} catch (DAOException e) {
+									e.printStackTrace();
+								}
+		    				}
+		    			}
+		    		});
+		        	
+		            popup.add(borrar);
+		            popup.show(e.getComponent(), e.getX(), e.getY());
+		            popup.setVisible(true);
+				}
+			}
+		});
+		
+		try {
+			model.updateModel();
+		} catch (DAOException e1) {
+			e1.printStackTrace();
+		}
+		
 		table.setModel(model);
 		scrollPane.setViewportView(table);
 		contentPane.setLayout(gl_contentPane);
+		
+		
 	    setLocationRelativeTo(null);
 	    setResizable(false);
 	}

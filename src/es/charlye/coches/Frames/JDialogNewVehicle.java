@@ -46,8 +46,11 @@ public class JDialogNewVehicle extends JDialog {
 	 * Create the dialog.
 	 */
 	public JDialogNewVehicle(DAOManager manager,Usuario usuario) {
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JDialogNewVehicle.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
 		setTitle("Crear Vehículo");
+		
+		
 		setBounds(100, 100, 327, 235);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -84,6 +87,8 @@ public class JDialogNewVehicle extends JDialog {
 		txtPropietario.setToolTipText("Escribe el nombre o parte de el y pulsa enter para buscarlo. ");
 		txtPropietario.setColumns(10);
 
+		if(propietario!=null)
+			txtPropietario.setText(propietario.getNombre());
 		
 		JYearChooser yearChooser = new JYearChooser();
 		
@@ -199,8 +204,8 @@ public class JDialogNewVehicle extends JDialog {
 					.addContainerGap(128, Short.MAX_VALUE))
 		);
 		contentPanel.setLayout(gl_contentPanel);
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
+		setModal(true);
 	}
 
 	public static Propietario getPropietario() {

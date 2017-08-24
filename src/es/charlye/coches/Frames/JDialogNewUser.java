@@ -95,20 +95,20 @@ public class JDialogNewUser extends JDialog {
 			}
 		});
 		
-		 int condition = JComponent.WHEN_FOCUSED;
-		  InputMap iMap = pwdConfirm.getInputMap(condition);
-		  ActionMap aMap = pwdConfirm.getActionMap();
+		int condition = JComponent.WHEN_FOCUSED;
+		InputMap iMap = pwdConfirm.getInputMap(condition);
+		ActionMap aMap = pwdConfirm.getActionMap();
 
-		  String enter = "enter";
-		  iMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enter);
-		  aMap.put(enter, new AbstractAction() {
+		String enter = "enter";
+		iMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enter);
+		aMap.put(enter, new AbstractAction() {
 			private static final long serialVersionUID = 3232103694966329326L;
 
 			@Override
 		     public void actionPerformed(ActionEvent arg0) {
 		    	 btnCrearNuevoUsuario.doClick();
 		     }
-		  });
+		});
 		
 		JLabel lblPrivilegio = new JLabel("Pemisos:");
 		

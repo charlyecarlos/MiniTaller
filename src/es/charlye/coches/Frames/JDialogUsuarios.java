@@ -25,6 +25,7 @@ public class JDialogUsuarios extends JDialog {
 	public JDialogUsuarios(DAOManager manager) throws DAOException {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JFrameAutenticator.class.getResource("/es/charlye/coches/Resources/ico_taller1.png")));
 		setTitle("Usuarios");
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 202, 288);
 		
 		JScrollPane scrollPane = new JScrollPane();
